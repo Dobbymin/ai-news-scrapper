@@ -17,6 +17,11 @@ import { AccuracyStats } from "./AccuracyStats";
  * @description 정확도 검토 위젯
  */
 
+/**
+ * AccuracyWidget - Widget Main Component
+ * @description 정확도 검토 위젯
+ */
+
 export function AccuracyWidget() {
   const { accuracyData, averageAccuracy, directionMatchRate, averageErrorRate, loading, error } = useAccuracyData();
 
@@ -48,8 +53,8 @@ export function AccuracyWidget() {
     return (
       <Alert className='border-yellow-200 bg-yellow-50'>
         <AlertDescription className='text-yellow-800'>
-          📊 <strong>정확도 데이터가 없습니다.</strong> AI 분석을 실행한 후 다음날 시장 결과와 비교하여 정확도를
-          확인할 수 있습니다.
+          📊 <strong>정확도 데이터가 없습니다.</strong> AI 분석을 실행한 후 다음날 시장 결과와 비교하여 정확도를 확인할
+          수 있습니다.
         </AlertDescription>
       </Alert>
     );

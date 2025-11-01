@@ -5,7 +5,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared";
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Cell, Legend, Pie, PieChart, PieLabelRenderProps, ResponsiveContainer, Tooltip } from "recharts";
 
 /**
  * SentimentTrendChart - Widget UI Component
@@ -51,7 +51,11 @@ export function SentimentTrendChart({ positiveCount, negativeCount, neutralCount
               cx='50%'
               cy='50%'
               labelLine={false}
-              label={(entry: { name: string; percent: number }) => `${entry.name} ${(entry.percent * 100).toFixed(0)}%`}
+              label={(props: PieLabelRenderProps) => {
+                const { name, percent } = props;
+                const percentValue = typeof percent === "number" ? percent : 0;
+                return `${name} ${(percentValue * 100).toFixed(0)}%`;
+              }}
               outerRadius={80}
               fill='#8884d8'
               dataKey='value'

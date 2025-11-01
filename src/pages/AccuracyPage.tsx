@@ -70,13 +70,9 @@ const mockAccuracy: AccuracyRecord[] = [
  * @description AI 예측과 실제 시장 결과를 비교하여 정확도를 표시
  */
 export default function AccuracyPage() {
-  const averageAccuracy =
-    mockAccuracy.reduce((sum, record) => sum + record.accuracy, 0) /
-    mockAccuracy.length;
+  const averageAccuracy = mockAccuracy.reduce((sum, record) => sum + record.accuracy, 0) / mockAccuracy.length;
 
-  const getDirectionLabel = (
-    direction: "bullish" | "bearish" | "neutral"
-  ) => {
+  const getDirectionLabel = (direction: "bullish" | "bearish" | "neutral") => {
     const config = {
       bullish: { label: "상승", className: "bg-green-100 text-green-800" },
       bearish: { label: "하락", className: "bg-red-100 text-red-800" },
@@ -93,88 +89,65 @@ export default function AccuracyPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
       {/* 페이지 헤더 */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">정확도 검토</h1>
-        <p className="text-muted-foreground mt-2">
-          AI 예측과 실제 시장 결과를 비교하여 정확도를 확인하세요.
-        </p>
+        <h1 className='text-3xl font-bold tracking-tight'>정확도 검토</h1>
+        <p className='mt-2 text-muted-foreground'>AI 예측과 실제 시장 결과를 비교하여 정확도를 확인하세요.</p>
       </div>
 
       {/* 전체 통계 카드 */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className='grid gap-4 md:grid-cols-3'>
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">평균 정확도</CardTitle>
+          <CardHeader className='pb-3'>
+            <CardTitle className='text-sm font-medium'>평균 정확도</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline gap-2">
+            <div className='flex items-baseline gap-2'>
               <div className={`text-3xl font-bold ${getAccuracyColor(averageAccuracy)}`}>
                 {averageAccuracy.toFixed(1)}%
               </div>
             </div>
-            <Progress value={averageAccuracy} className="mt-2 h-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              최근 {mockAccuracy.length}일 평균
+            <Progress value={averageAccuracy} className='mt-2 h-2' />
+            <p className='mt-2 text-xs text-muted-foreground'>최근 {mockAccuracy.length}일 평균</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className='pb-3'>
+            <CardTitle className='text-sm font-medium'>방향 일치율</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className='flex items-baseline gap-2'>
+              <div className='text-3xl font-bold text-green-600'>
+                {Math.round((mockAccuracy.filter((r) => r.directionMatch).length / mockAccuracy.length) * 100)}%
+              </div>
+            </div>
+            <Progress
+              value={(mockAccuracy.filter((r) => r.directionMatch).length / mockAccuracy.length) * 100}
+              className='mt-2 h-2 [&>div]:bg-green-600'
+            />
+            <p className='mt-2 text-xs text-muted-foreground'>
+              {mockAccuracy.filter((r) => r.directionMatch).length}/{mockAccuracy.length} 성공
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">방향 일치율</CardTitle>
+          <CardHeader className='pb-3'>
+            <CardTitle className='text-sm font-medium'>평균 오차율</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-green-600">
-                {Math.round(
-                  (mockAccuracy.filter((r) => r.directionMatch).length /
-                    mockAccuracy.length) *
-                    100
-                )}
-                %
+            <div className='flex items-baseline gap-2'>
+              <div className='text-3xl font-bold text-blue-600'>
+                {(mockAccuracy.reduce((sum, r) => sum + r.errorRate, 0) / mockAccuracy.length).toFixed(1)}%
               </div>
             </div>
             <Progress
-              value={
-                (mockAccuracy.filter((r) => r.directionMatch).length /
-                  mockAccuracy.length) *
-                100
-              }
-              className="mt-2 h-2 [&>div]:bg-green-600"
+              value={mockAccuracy.reduce((sum, r) => sum + r.errorRate, 0) / mockAccuracy.length}
+              className='mt-2 h-2 [&>div]:bg-blue-600'
             />
-            <p className="text-xs text-muted-foreground mt-2">
-              {mockAccuracy.filter((r) => r.directionMatch).length}/
-              {mockAccuracy.length} 성공
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">평균 오차율</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-blue-600">
-                {(
-                  mockAccuracy.reduce((sum, r) => sum + r.errorRate, 0) /
-                  mockAccuracy.length
-                ).toFixed(1)}
-                %
-              </div>
-            </div>
-            <Progress
-              value={
-                mockAccuracy.reduce((sum, r) => sum + r.errorRate, 0) /
-                mockAccuracy.length
-              }
-              className="mt-2 h-2 [&>div]:bg-blue-600"
-            />
-            <p className="text-xs text-muted-foreground mt-2">
-              낮을수록 좋음
-            </p>
+            <p className='mt-2 text-xs text-muted-foreground'>낮을수록 좋음</p>
           </CardContent>
         </Card>
       </div>
@@ -183,84 +156,59 @@ export default function AccuracyPage() {
       <Card>
         <CardHeader>
           <CardTitle>일별 정확도 기록</CardTitle>
-          <CardDescription>
-            예측 투자 지수와 실제 시장 결과를 비교합니다.
-          </CardDescription>
+          <CardDescription>예측 투자 지수와 실제 시장 결과를 비교합니다.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className='space-y-4'>
           {mockAccuracy.map((record) => {
             const directionBadge = getDirectionLabel(record.predictedDirection);
             return (
-              <div
-                key={record.date}
-                className="border rounded-lg p-4 space-y-3"
-              >
+              <div key={record.date} className='space-y-3 rounded-lg border p-4'>
                 {/* 헤더 */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="text-lg font-semibold">{record.date}</div>
-                    <Badge className={directionBadge.className}>
-                      {directionBadge.label}
-                    </Badge>
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-3'>
+                    <div className='text-lg font-semibold'>{record.date}</div>
+                    <Badge className={directionBadge.className}>{directionBadge.label}</Badge>
                     {record.directionMatch && (
-                      <Badge variant="outline" className="bg-green-50 text-green-700">
+                      <Badge variant='outline' className='bg-green-50 text-green-700'>
                         ✓ 방향 일치
                       </Badge>
                     )}
                   </div>
-                  <div className={`text-2xl font-bold ${getAccuracyColor(record.accuracy)}`}>
-                    {record.accuracy}%
-                  </div>
+                  <div className={`text-2xl font-bold ${getAccuracyColor(record.accuracy)}`}>{record.accuracy}%</div>
                 </div>
 
                 {/* 예측 vs 실제 */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium text-muted-foreground">
-                      예측 투자 지수
-                    </div>
-                    <div className="text-2xl font-bold">
-                      {record.predictedIndex}%
-                    </div>
+                <div className='grid grid-cols-2 gap-4'>
+                  <div className='space-y-2'>
+                    <div className='text-sm font-medium text-muted-foreground'>예측 투자 지수</div>
+                    <div className='text-2xl font-bold'>{record.predictedIndex}%</div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium text-muted-foreground">
-                      실제 시장 결과
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className='space-y-2'>
+                    <div className='text-sm font-medium text-muted-foreground'>실제 시장 결과</div>
+                    <div className='grid grid-cols-2 gap-2 text-sm'>
                       <div>
-                        <div className="text-muted-foreground">BTC</div>
+                        <div className='text-muted-foreground'>BTC</div>
                         <div
-                          className={
-                            record.actualBTC >= 0
-                              ? "text-green-600 font-medium"
-                              : "text-red-600 font-medium"
-                          }
+                          className={record.actualBTC >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"}
                         >
                           {record.actualBTC >= 0 ? "+" : ""}
                           {record.actualBTC}%
                         </div>
                       </div>
                       <div>
-                        <div className="text-muted-foreground">ETH</div>
+                        <div className='text-muted-foreground'>ETH</div>
                         <div
-                          className={
-                            record.actualETH >= 0
-                              ? "text-green-600 font-medium"
-                              : "text-red-600 font-medium"
-                          }
+                          className={record.actualETH >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"}
                         >
                           {record.actualETH >= 0 ? "+" : ""}
                           {record.actualETH}%
                         </div>
                       </div>
                       <div>
-                        <div className="text-muted-foreground">KOSPI</div>
+                        <div className='text-muted-foreground'>KOSPI</div>
                         <div
                           className={
-                            record.actualKOSPI >= 0
-                              ? "text-green-600 font-medium"
-                              : "text-red-600 font-medium"
+                            record.actualKOSPI >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"
                           }
                         >
                           {record.actualKOSPI >= 0 ? "+" : ""}
@@ -268,12 +216,10 @@ export default function AccuracyPage() {
                         </div>
                       </div>
                       <div>
-                        <div className="text-muted-foreground">KOSDAQ</div>
+                        <div className='text-muted-foreground'>KOSDAQ</div>
                         <div
                           className={
-                            record.actualKOSDAQ >= 0
-                              ? "text-green-600 font-medium"
-                              : "text-red-600 font-medium"
+                            record.actualKOSDAQ >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"
                           }
                         >
                           {record.actualKOSDAQ >= 0 ? "+" : ""}
@@ -285,10 +231,10 @@ export default function AccuracyPage() {
                 </div>
 
                 {/* 오차율 */}
-                <div className="pt-2 border-t">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">오차율</span>
-                    <span className="font-medium">{record.errorRate}%</span>
+                <div className='border-t pt-2'>
+                  <div className='flex items-center justify-between text-sm'>
+                    <span className='text-muted-foreground'>오차율</span>
+                    <span className='font-medium'>{record.errorRate}%</span>
                   </div>
                 </div>
               </div>
@@ -300,8 +246,8 @@ export default function AccuracyPage() {
       {/* 개선 제안 */}
       <Alert>
         <AlertDescription>
-          💡 <strong>AI 학습 진행 중:</strong> 정확도가 지속적으로 개선되고 있습니다.
-          매일 정확도를 검토하여 AI 성능을 높여보세요.
+          💡 <strong>AI 학습 진행 중:</strong> 정확도가 지속적으로 개선되고 있습니다. 매일 정확도를 검토하여 AI 성능을
+          높여보세요.
         </AlertDescription>
       </Alert>
     </div>

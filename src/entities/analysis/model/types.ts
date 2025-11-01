@@ -59,3 +59,20 @@ export interface AnalysisProgress {
   /** 현재 처리 중인 뉴스 제목 */
   currentTitle?: string;
 }
+
+/**
+ * 대시보드용 분석 데이터
+ */
+export interface AnalysisData {
+  date: string;
+  totalNews: number;
+  investmentIndex: number;
+  grade: string;
+  recommendation: string;
+  summary: {
+    positive: number;
+    negative: number;
+    neutral: number;
+  };
+  keywords: string[];
+}

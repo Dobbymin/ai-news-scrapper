@@ -43,3 +43,7 @@ next-env.d.ts
 # ai-news-trader specific
 /data/
 .env.local
+
+# vibe coding assistant
+/.github/copilot-instructions.md
+/docs/

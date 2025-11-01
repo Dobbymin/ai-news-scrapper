@@ -1,10 +1,11 @@
-import type { News } from '@/entities/news';
-import type { SentimentAnalysis, AnalysisProgress } from '@/entities/analysis';
-import { generateContent, parseJsonResponse, manageRateLimit } from './gemini-client.server';
+import type { AnalysisProgress, SentimentAnalysis } from "@/entities/analysis";
+import type { News } from "@/entities/news";
+
+import { generateContent, manageRateLimit, parseJsonResponse } from "./gemini-client.server";
 
 /**
  * 감성 분석기
- * 
+ *
  * @description
  * Gemini API를 사용하여 뉴스 감성 분석을 수행합니다.
  * - Few-shot Learning으로 정확도 향상
@@ -78,29 +79,29 @@ function createSentimentPrompt(news: News): string {
  */
 export async function analyzeSingleNews(news: News): Promise<SentimentAnalysis> {
   console.log(`📊 뉴스 분석 중: [${news.id}] ${news.title}`);
-  
+
   const prompt = createSentimentPrompt(news);
   const response = await generateContent(prompt);
-  
+
   // JSON 응답 파싱
   interface GeminiResponse {
-    sentiment: 'positive' | 'negative' | 'neutral';
+    sentiment: "positive" | "negative" | "neutral";
     confidence: number;
     keywords: string[];
     reason: string;
   }
-  
+
   const parsed = parseJsonResponse<GeminiResponse>(response);
-  
+
   // 유효성 검증
-  if (!['positive', 'negative', 'neutral'].includes(parsed.sentiment)) {
+  if (!["positive", "negative", "neutral"].includes(parsed.sentiment)) {
     throw new Error(`Invalid sentiment value: ${parsed.sentiment}`);
   }
-  
+
   if (parsed.confidence < 0 || parsed.confidence > 100) {
     throw new Error(`Invalid confidence value: ${parsed.confidence}`);
   }
-  
+
   const result: SentimentAnalysis = {
     newsId: news.id,
     sentiment: parsed.sentiment,
@@ -108,9 +109,9 @@ export async function analyzeSingleNews(news: News): Promise<SentimentAnalysis> 
     keywords: parsed.keywords.slice(0, 5), // 최대 5개
     reason: parsed.reason,
   };
-  
+
   console.log(`✅ 분석 완료: ${result.sentiment} (신뢰도: ${result.confidence}%)`);
-  
+
   return result;
 }
 
@@ -122,16 +123,16 @@ export async function analyzeSingleNews(news: News): Promise<SentimentAnalysis> 
  */
 export async function analyzeNewsArray(
   newsList: News[],
-  onProgress?: (progress: AnalysisProgress) => void
+  onProgress?: (progress: AnalysisProgress) => void,
 ): Promise<SentimentAnalysis[]> {
   console.log(`\n📊 감성 분석 시작: 총 ${newsList.length}개 뉴스`);
-  console.log('━'.repeat(50));
-  
+  console.log("━".repeat(50));
+
   const results: SentimentAnalysis[] = [];
-  
+
   for (let i = 0; i < newsList.length; i++) {
     const news = newsList[i];
-    
+
     // 진행 상황 업데이트
     if (onProgress) {
       onProgress({
@@ -141,31 +142,30 @@ export async function analyzeNewsArray(
         currentTitle: news.title,
       });
     }
-    
+
     try {
       const result = await analyzeSingleNews(news);
       results.push(result);
-      
+
       // 요청 한도 관리 (60 요청/분)
       await manageRateLimit(i + 1);
-      
     } catch (error) {
       console.error(`❌ 뉴스 [${news.id}] 분석 실패:`, error);
-      
+
       // 실패한 경우 neutral로 처리
       results.push({
         newsId: news.id,
-        sentiment: 'neutral',
+        sentiment: "neutral",
         confidence: 0,
-        keywords: ['분석 실패'],
-        reason: `분석 중 오류 발생: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+        keywords: ["분석 실패"],
+        reason: `분석 중 오류 발생: ${error instanceof Error ? error.message : "알 수 없는 오류"}`,
       });
     }
   }
-  
-  console.log('━'.repeat(50));
+
+  console.log("━".repeat(50));
   console.log(`✅ 감성 분석 완료: ${results.length}개 뉴스`);
-  
+
   return results;
 }
 
@@ -180,9 +180,9 @@ export function summarizeAnalysis(analyses: SentimentAnalysis[]): {
   neutral: number;
 } {
   return {
-    positive: analyses.filter((a) => a.sentiment === 'positive').length,
-    negative: analyses.filter((a) => a.sentiment === 'negative').length,
-    neutral: analyses.filter((a) => a.sentiment === 'neutral').length,
+    positive: analyses.filter((a) => a.sentiment === "positive").length,
+    negative: analyses.filter((a) => a.sentiment === "negative").length,
+    neutral: analyses.filter((a) => a.sentiment === "neutral").length,
   };
 }
 
@@ -192,12 +192,9 @@ export function summarizeAnalysis(analyses: SentimentAnalysis[]): {
  * @param topN 상위 N개 키워드 (기본값: 5)
  * @returns 빈도순 키워드 배열
  */
-export function extractTopKeywords(
-  analyses: SentimentAnalysis[],
-  topN: number = 5
-): string[] {
+export function extractTopKeywords(analyses: SentimentAnalysis[], topN: number = 5): string[] {
   const keywordCount = new Map<string, number>();
-  
+
   // 모든 키워드 수집 및 빈도 계산
   for (const analysis of analyses) {
     for (const keyword of analysis.keywords) {
@@ -205,7 +202,7 @@ export function extractTopKeywords(
       keywordCount.set(normalized, (keywordCount.get(normalized) || 0) + 1);
     }
   }
-  
+
   // 빈도순 정렬 및 상위 N개 선택
   return Array.from(keywordCount.entries())
     .sort((a, b) => b[1] - a[1])

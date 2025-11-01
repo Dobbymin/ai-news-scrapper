@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * 감성 분석 결과 스키마
  */
 export const SentimentAnalysisSchema = z.object({
   newsId: z.number().int().positive(),
-  sentiment: z.enum(['positive', 'negative', 'neutral']),
+  sentiment: z.enum(["positive", "negative", "neutral"]),
   confidence: z.number().min(0).max(100),
   keywords: z.array(z.string()).min(1),
   reason: z.string().min(10),

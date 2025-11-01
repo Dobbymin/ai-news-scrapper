@@ -1,10 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
 
-import { News, NewsArraySchema } from "@/entities/news";
+import type { AccuracyLog } from "@/entities/accuracy";
 import type { AnalysisResult } from "@/entities/analysis";
 import { AnalysisResultSchema } from "@/entities/analysis";
-import type { AccuracyLog } from "@/entities/accuracy";
+import { News, NewsArraySchema } from "@/entities/news";
+
 import type { LearningData } from "../utils/learning-data.server";
 
 /**
@@ -184,10 +185,7 @@ export async function loadJson<T>(subDir: string, fileName: string): Promise<T |
  * @param date 저장 날짜 (기본값: 오늘)
  * @returns 저장된 파일 경로
  */
-export async function saveAnalysis(
-  analysis: AnalysisResult,
-  date: Date = new Date()
-): Promise<string> {
+export async function saveAnalysis(analysis: AnalysisResult, date: Date = new Date()): Promise<string> {
   // 유효성 검증
   const validated = AnalysisResultSchema.parse(analysis);
 
@@ -242,10 +240,7 @@ export async function loadMarketData(date: Date = new Date()): Promise<any | nul
  * @param date 저장 날짜 (기본값: 오늘)
  * @returns 저장된 파일 경로
  */
-export async function saveAccuracyLog(
-  accuracyLog: AccuracyLog,
-  date: Date = new Date()
-): Promise<string> {
+export async function saveAccuracyLog(accuracyLog: AccuracyLog, date: Date = new Date()): Promise<string> {
   const dateStr = formatDate(date);
   const fileName = `accuracy-${dateStr}.json`;
 

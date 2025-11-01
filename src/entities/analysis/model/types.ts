@@ -5,7 +5,7 @@ export interface SentimentAnalysis {
   /** 뉴스 ID */
   newsId: number;
   /** 감성: positive(긍정), negative(부정), neutral(중립) */
-  sentiment: 'positive' | 'negative' | 'neutral';
+  sentiment: "positive" | "negative" | "neutral";
   /** 신뢰도 (0-100%) */
   confidence: number;
   /** 추출된 키워드 */

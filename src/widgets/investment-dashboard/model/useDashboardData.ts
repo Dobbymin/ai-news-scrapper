@@ -2,8 +2,8 @@
  * Investment Dashboard Widget - Model
  * @description 대시보드 데이터를 관리하는 훅
  */
-
 import { useEffect, useState } from "react";
+
 import type { AnalysisData } from "@/entities/analysis";
 
 interface UseDashboardDataReturn {

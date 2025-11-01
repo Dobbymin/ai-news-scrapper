@@ -4,3 +4,5 @@
  */
 
 export * from "./investment-dashboard";
+export * from "./news-list-widget";
+export * from "./accuracy-widget";

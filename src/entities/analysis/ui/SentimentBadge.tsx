@@ -2,7 +2,6 @@
  * SentimentBadge - Entity UI Component
  * @description 감성 분석 결과를 표시하는 읽기 전용 배지 컴포넌트
  */
-
 import { Badge } from "@/shared";
 
 export type SentimentType = "positive" | "negative" | "neutral";

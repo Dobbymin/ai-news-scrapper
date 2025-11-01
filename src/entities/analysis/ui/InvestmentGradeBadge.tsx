@@ -2,7 +2,6 @@
  * InvestmentGradeBadge - Entity UI Component
  * @description 투자 등급을 표시하는 읽기 전용 배지 컴포넌트
  */
-
 import { Badge } from "@/shared";
 
 interface InvestmentGradeBadgeProps {

@@ -8,13 +8,11 @@ import { InvestmentDashboard } from "@/widgets/investment-dashboard";
  */
 export default function MainPage() {
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
       {/* 페이지 헤더 */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">AI 뉴스 투자 분석</h1>
-        <p className="text-muted-foreground mt-2">
-          AI가 분석한 뉴스 기반 투자 인사이트를 확인하세요.
-        </p>
+        <h1 className='text-3xl font-bold tracking-tight'>AI 뉴스 투자 분석</h1>
+        <p className='mt-2 text-muted-foreground'>AI가 분석한 뉴스 기반 투자 인사이트를 확인하세요.</p>
       </div>
 
       {/* 대시보드 위젯 */}

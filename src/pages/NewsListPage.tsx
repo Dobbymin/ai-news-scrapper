@@ -1,25 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
+
+import { Alert, AlertDescription } from "@/shared/components/ui/alert";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/components/ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Progress } from "@/shared/components/ui/progress";
-import { Alert, AlertDescription } from "@/shared/components/ui/alert";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
 
 type SentimentType = "positive" | "negative" | "neutral";
 
@@ -68,9 +56,7 @@ export default function NewsListPage() {
       }
 
       const analysis = await analysisRes.json();
-      const analysisMap = new Map(
-        analysis.newsAnalysis?.map((a: any) => [a.newsId, a]) || []
-      );
+      const analysisMap = new Map(analysis.newsAnalysis?.map((a: any) => [a.newsId, a]) || []);
 
       // 뉴스와 분석 결과 병합
       const merged: NewsWithAnalysis[] = news.map((item) => {
@@ -92,10 +78,7 @@ export default function NewsListPage() {
     }
   };
 
-  const filteredNews =
-    filter === "all"
-      ? newsData
-      : newsData.filter((news) => news.sentiment === filter);
+  const filteredNews = filter === "all" ? newsData : newsData.filter((news) => news.sentiment === filter);
 
   const getSentimentBadge = (sentiment: SentimentType) => {
     const config = {
@@ -119,10 +102,10 @@ export default function NewsListPage() {
   // 로딩 상태
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center space-y-4">
-          <div className="text-2xl">⏳</div>
-          <p className="text-muted-foreground">뉴스 데이터를 불러오는 중...</p>
+      <div className='flex min-h-[400px] items-center justify-center'>
+        <div className='space-y-4 text-center'>
+          <div className='text-2xl'>⏳</div>
+          <p className='text-muted-foreground'>뉴스 데이터를 불러오는 중...</p>
         </div>
       </div>
     );
@@ -131,27 +114,23 @@ export default function NewsListPage() {
   // 에러 상태
   if (error) {
     return (
-      <Alert className="bg-red-50 border-red-200">
-        <AlertDescription className="text-red-800">⚠️ {error}</AlertDescription>
+      <Alert className='border-red-200 bg-red-50'>
+        <AlertDescription className='text-red-800'>⚠️ {error}</AlertDescription>
       </Alert>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
       {/* 페이지 헤더 */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">뉴스 목록</h1>
-        <p className="text-muted-foreground mt-2">
-          AI가 분석한 뉴스와 감성 분석 결과를 확인하세요.
-        </p>
+        <h1 className='text-3xl font-bold tracking-tight'>뉴스 목록</h1>
+        <p className='mt-2 text-muted-foreground'>AI가 분석한 뉴스와 감성 분석 결과를 확인하세요.</p>
       </div>
 
       {newsData.length === 0 && (
         <Alert>
-          <AlertDescription>
-            📰 아직 분석된 뉴스가 없습니다.
-          </AlertDescription>
+          <AlertDescription>📰 아직 분석된 뉴스가 없습니다.</AlertDescription>
         </Alert>
       )}
 
@@ -164,39 +143,28 @@ export default function NewsListPage() {
               <CardDescription>감성별로 뉴스를 필터링하세요.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2">
-                <Button
-                  variant={filter === "all" ? "default" : "outline"}
-                  onClick={() => setFilter("all")}
-                >
+              <div className='flex gap-2'>
+                <Button variant={filter === "all" ? "default" : "outline"} onClick={() => setFilter("all")}>
                   전체 ({newsData.length})
                 </Button>
                 <Button
                   variant={filter === "positive" ? "default" : "outline"}
                   onClick={() => setFilter("positive")}
-                  className={
-                    filter === "positive"
-                      ? "bg-green-600 hover:bg-green-700"
-                      : ""
-                  }
+                  className={filter === "positive" ? "bg-green-600 hover:bg-green-700" : ""}
                 >
                   긍정 ({newsData.filter((n) => n.sentiment === "positive").length})
                 </Button>
                 <Button
                   variant={filter === "negative" ? "default" : "outline"}
                   onClick={() => setFilter("negative")}
-                  className={
-                    filter === "negative" ? "bg-red-600 hover:bg-red-700" : ""
-                  }
+                  className={filter === "negative" ? "bg-red-600 hover:bg-red-700" : ""}
                 >
                   부정 ({newsData.filter((n) => n.sentiment === "negative").length})
                 </Button>
                 <Button
                   variant={filter === "neutral" ? "default" : "outline"}
                   onClick={() => setFilter("neutral")}
-                  className={
-                    filter === "neutral" ? "bg-gray-600 hover:bg-gray-700" : ""
-                  }
+                  className={filter === "neutral" ? "bg-gray-600 hover:bg-gray-700" : ""}
                 >
                   중립 ({newsData.filter((n) => n.sentiment === "neutral").length})
                 </Button>
@@ -210,20 +178,18 @@ export default function NewsListPage() {
       <Card>
         <CardHeader>
           <CardTitle>분석 결과</CardTitle>
-          <CardDescription>
-            {filteredNews.length}개의 뉴스가 표시됩니다.
-          </CardDescription>
+          <CardDescription>{filteredNews.length}개의 뉴스가 표시됩니다.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[50%]">제목</TableHead>
+                <TableHead className='w-[50%]'>제목</TableHead>
                 <TableHead>감성</TableHead>
                 <TableHead>신뢰도</TableHead>
                 <TableHead>출처</TableHead>
                 <TableHead>작성일</TableHead>
-                <TableHead className="text-right">링크</TableHead>
+                <TableHead className='text-right'>링크</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -231,12 +197,12 @@ export default function NewsListPage() {
                 const badge = getSentimentBadge(news.sentiment);
                 return (
                   <TableRow key={news.id}>
-                    <TableCell className="font-medium">
-                      <div className="space-y-1">
-                        <div className="line-clamp-2">{news.title}</div>
-                        <div className="flex gap-1 flex-wrap">
+                    <TableCell className='font-medium'>
+                      <div className='space-y-1'>
+                        <div className='line-clamp-2'>{news.title}</div>
+                        <div className='flex flex-wrap gap-1'>
                           {news.keywords.map((keyword) => (
-                            <Badge key={keyword} variant="outline" className="text-xs">
+                            <Badge key={keyword} variant='outline' className='text-xs'>
                               {keyword}
                             </Badge>
                           ))}
@@ -247,30 +213,16 @@ export default function NewsListPage() {
                       <Badge className={badge.className}>{badge.label}</Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="space-y-1">
-                        <div className="text-sm font-medium">
-                          {news.confidence}%
-                        </div>
-                        <Progress value={news.confidence} className="h-1.5" />
+                      <div className='space-y-1'>
+                        <div className='text-sm font-medium'>{news.confidence}%</div>
+                        <Progress value={news.confidence} className='h-1.5' />
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {news.source}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(news.publishedAt)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        asChild
-                      >
-                        <a
-                          href={news.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                    <TableCell className='text-sm text-muted-foreground'>{news.source}</TableCell>
+                    <TableCell className='text-sm text-muted-foreground'>{formatDate(news.publishedAt)}</TableCell>
+                    <TableCell className='text-right'>
+                      <Button size='sm' variant='outline' asChild>
+                        <a href={news.url} target='_blank' rel='noopener noreferrer'>
                           원문 →
                         </a>
                       </Button>

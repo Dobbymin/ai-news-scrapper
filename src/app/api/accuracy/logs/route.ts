@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { loadAccuracyLogs } from "@/server/storage/json-store.server";
 
 /**
@@ -14,18 +15,12 @@ export async function GET(request: NextRequest) {
     const logs = await loadAccuracyLogs(limit);
 
     if (!logs || logs.length === 0) {
-      return NextResponse.json(
-        { error: "정확도 로그를 찾을 수 없습니다." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "정확도 로그를 찾을 수 없습니다." }, { status: 404 });
     }
 
     return NextResponse.json(logs);
   } catch (error) {
     console.error("정확도 로그 로드 실패:", error);
-    return NextResponse.json(
-      { error: "정확도 로그를 불러오는 중 오류가 발생했습니다." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "정확도 로그를 불러오는 중 오류가 발생했습니다." }, { status: 500 });
   }
 }

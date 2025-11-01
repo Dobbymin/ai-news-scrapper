@@ -10,7 +10,7 @@ public
 *.config.js
 *.config.ts
 *.config.mjs
-*.md
+# *.md
 
 # Git 관련 파일 무시
 .github

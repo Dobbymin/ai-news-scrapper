@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { analyzeAndCalculate } from "@/server/ai/analyze-and-calculate.server";
 
 /**
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: error instanceof Error ? error.message : "분석 실행 중 오류가 발생했습니다.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

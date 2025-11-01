@@ -84,16 +84,14 @@ export default function MainPage() {
       }
 
       setAnalyzeSuccess(true);
-      
+
       // 3초 후 페이지 새로고침
       setTimeout(() => {
         window.location.reload();
       }, 3000);
     } catch (err) {
       console.error("분석 실행 실패:", err);
-      setAnalyzeError(
-        err instanceof Error ? err.message : "분석 실행 중 오류가 발생했습니다."
-      );
+      setAnalyzeError(err instanceof Error ? err.message : "분석 실행 중 오류가 발생했습니다.");
     } finally {
       setAnalyzing(false);
     }
@@ -167,28 +165,18 @@ export default function MainPage() {
 
       {/* 액션 버튼 */}
       <div className='flex gap-4'>
-        <Button 
-          size='lg' 
-          className='gap-2' 
-          onClick={handleAnalyze}
-          disabled={analyzing}
-        >
+        <Button size='lg' className='gap-2' onClick={handleAnalyze} disabled={analyzing}>
           {analyzing ? "� 분석 중..." : "�📰 오늘 뉴스 수집"}
         </Button>
-        <Button 
-          size='lg' 
-          variant='outline' 
-          className='gap-2'
-          asChild
-        >
-          <a href="/accuracy">📊 정확도 검토</a>
+        <Button size='lg' variant='outline' className='gap-2' asChild>
+          <a href='/accuracy'>📊 정확도 검토</a>
         </Button>
       </div>
 
       {/* 분석 진행 중 알림 */}
       {analyzing && (
-        <Alert className="bg-blue-50 border-blue-200">
-          <AlertDescription className="text-blue-800">
+        <Alert className='border-blue-200 bg-blue-50'>
+          <AlertDescription className='text-blue-800'>
             ⏳ AI가 뉴스를 분석하고 있습니다. 잠시만 기다려주세요...
           </AlertDescription>
         </Alert>
@@ -196,8 +184,8 @@ export default function MainPage() {
 
       {/* 분석 완료 알림 */}
       {analyzeSuccess && (
-        <Alert className="bg-green-50 border-green-200">
-          <AlertDescription className="text-green-800">
+        <Alert className='border-green-200 bg-green-50'>
+          <AlertDescription className='text-green-800'>
             ✅ 분석이 완료되었습니다! 페이지가 곧 새로고침됩니다.
           </AlertDescription>
         </Alert>
@@ -205,10 +193,8 @@ export default function MainPage() {
 
       {/* 분석 에러 알림 */}
       {analyzeError && (
-        <Alert className="bg-red-50 border-red-200">
-          <AlertDescription className="text-red-800">
-            ❌ {analyzeError}
-          </AlertDescription>
+        <Alert className='border-red-200 bg-red-50'>
+          <AlertDescription className='text-red-800'>❌ {analyzeError}</AlertDescription>
         </Alert>
       )}
 

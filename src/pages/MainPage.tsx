@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { Alert, AlertDescription } from "@/shared/components/ui/alert";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { Progress } from "@/shared/components/ui/progress";
+import {
+  Alert,
+  AlertDescription,
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Progress,
+} from "@/shared";
 
 interface AnalysisData {
   date: string;
@@ -166,7 +172,7 @@ export default function MainPage() {
       {/* 액션 버튼 */}
       <div className='flex gap-4'>
         <Button size='lg' className='gap-2' onClick={handleAnalyze} disabled={analyzing}>
-          {analyzing ? "� 분석 중..." : "�📰 오늘 뉴스 수집"}
+          {analyzing ? "⏳ 분석 중..." : "📰 오늘 뉴스 수집"}
         </Button>
         <Button size='lg' variant='outline' className='gap-2' asChild>
           <a href='/accuracy'>📊 정확도 검토</a>

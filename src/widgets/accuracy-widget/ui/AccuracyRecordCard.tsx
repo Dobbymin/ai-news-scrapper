@@ -2,8 +2,8 @@
  * AccuracyRecordCard - Widget UI Component
  * @description 개별 정확도 기록 카드 컴포넌트
  */
-
 import { Badge } from "@/shared";
+
 import type { AccuracyRecord } from "../model/types";
 
 interface AccuracyRecordCardProps {
@@ -30,14 +30,14 @@ export function AccuracyRecordCard({ record }: AccuracyRecordCardProps) {
   const directionBadge = getDirectionLabel(record.predictedDirection);
 
   return (
-    <div className="border rounded-lg p-4 space-y-3">
+    <div className='space-y-3 rounded-lg border p-4'>
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="text-lg font-semibold">{record.date}</div>
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-3'>
+          <div className='text-lg font-semibold'>{record.date}</div>
           <Badge className={directionBadge.className}>{directionBadge.label}</Badge>
           {record.directionMatch && (
-            <Badge variant="outline" className="bg-green-50 text-green-700">
+            <Badge variant='outline' className='bg-green-50 text-green-700'>
               ✓ 방향 일치
             </Badge>
           )}
@@ -46,40 +46,38 @@ export function AccuracyRecordCard({ record }: AccuracyRecordCardProps) {
       </div>
 
       {/* 예측 vs 실제 */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">예측 투자 지수</div>
-          <div className="text-2xl font-bold">{record.predictedIndex}%</div>
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>예측 투자 지수</div>
+          <div className='text-2xl font-bold'>{record.predictedIndex}%</div>
         </div>
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">실제 시장 결과</div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>실제 시장 결과</div>
+          <div className='grid grid-cols-2 gap-2 text-sm'>
             <div>
-              <div className="text-muted-foreground">BTC</div>
-              <div className={record.actualBTC >= 0 ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+              <div className='text-muted-foreground'>BTC</div>
+              <div className={record.actualBTC >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"}>
                 {record.actualBTC >= 0 ? "+" : ""}
                 {record.actualBTC}%
               </div>
             </div>
             <div>
-              <div className="text-muted-foreground">ETH</div>
-              <div className={record.actualETH >= 0 ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+              <div className='text-muted-foreground'>ETH</div>
+              <div className={record.actualETH >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"}>
                 {record.actualETH >= 0 ? "+" : ""}
                 {record.actualETH}%
               </div>
             </div>
             <div>
-              <div className="text-muted-foreground">KOSPI</div>
-              <div className={record.actualKOSPI >= 0 ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+              <div className='text-muted-foreground'>KOSPI</div>
+              <div className={record.actualKOSPI >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"}>
                 {record.actualKOSPI >= 0 ? "+" : ""}
                 {record.actualKOSPI}%
               </div>
             </div>
             <div>
-              <div className="text-muted-foreground">KOSDAQ</div>
-              <div
-                className={record.actualKOSDAQ >= 0 ? "text-green-600 font-medium" : "text-red-600 font-medium"}
-              >
+              <div className='text-muted-foreground'>KOSDAQ</div>
+              <div className={record.actualKOSDAQ >= 0 ? "font-medium text-green-600" : "font-medium text-red-600"}>
                 {record.actualKOSDAQ >= 0 ? "+" : ""}
                 {record.actualKOSDAQ}%
               </div>
@@ -89,10 +87,10 @@ export function AccuracyRecordCard({ record }: AccuracyRecordCardProps) {
       </div>
 
       {/* 오차율 */}
-      <div className="pt-2 border-t">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">오차율</span>
-          <span className="font-medium">{record.errorRate}%</span>
+      <div className='border-t pt-2'>
+        <div className='flex items-center justify-between text-sm'>
+          <span className='text-muted-foreground'>오차율</span>
+          <span className='font-medium'>{record.errorRate}%</span>
         </div>
       </div>
     </div>

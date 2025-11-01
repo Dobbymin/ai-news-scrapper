@@ -2,8 +2,8 @@
  * NewsFilter - Widget UI Component
  * @description 뉴스 감성 필터 컴포넌트
  */
-
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared";
+
 import type { SentimentType } from "@/entities/analysis";
 
 interface NewsFilterProps {
@@ -25,7 +25,7 @@ export function NewsFilter({ filter, onFilterChange, counts }: NewsFilterProps) 
         <CardDescription>감성별로 뉴스를 필터링하세요.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button variant={filter === "all" ? "default" : "outline"} onClick={() => onFilterChange("all")}>
             전체 ({counts.all})
           </Button>

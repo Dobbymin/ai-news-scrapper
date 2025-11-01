@@ -2,8 +2,8 @@
  * News List Widget - Model
  * @description 뉴스 목록 데이터를 관리하는 훅
  */
-
 import { useEffect, useState } from "react";
+
 import type { SentimentType } from "@/entities/analysis";
 
 interface NewsItem {

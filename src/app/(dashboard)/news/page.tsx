@@ -8,11 +8,11 @@ import { NewsListWidget } from "@/widgets/news-list-widget";
  */
 export default function News() {
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
       {/* 페이지 헤더 */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">뉴스 목록</h1>
-        <p className="text-muted-foreground mt-2">AI가 분석한 뉴스와 감성 분석 결과를 확인하세요.</p>
+        <h1 className='text-3xl font-bold tracking-tight'>뉴스 목록</h1>
+        <p className='mt-2 text-muted-foreground'>AI가 분석한 뉴스와 감성 분석 결과를 확인하세요.</p>
       </div>
 
       {/* 뉴스 리스트 위젯 */}

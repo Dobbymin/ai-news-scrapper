@@ -2,7 +2,6 @@
  * AccuracyStats - Widget UI Component
  * @description 정확도 통계 카드 컴포넌트
  */
-
 import { Card, CardContent, CardHeader, CardTitle, Progress } from "@/shared";
 
 interface AccuracyStatsProps {
@@ -28,34 +27,34 @@ export function AccuracyStats({
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className='grid gap-4 md:grid-cols-3'>
       {/* 평균 정확도 */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">평균 정확도</CardTitle>
+        <CardHeader className='pb-3'>
+          <CardTitle className='text-sm font-medium'>평균 정확도</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-baseline gap-2">
+          <div className='flex items-baseline gap-2'>
             <div className={`text-3xl font-bold ${getAccuracyColor(averageAccuracy)}`}>
               {averageAccuracy.toFixed(1)}%
             </div>
           </div>
-          <Progress value={averageAccuracy} className="mt-2 h-2" />
-          <p className="text-xs text-muted-foreground mt-2">최근 {totalRecords}일 평균</p>
+          <Progress value={averageAccuracy} className='mt-2 h-2' />
+          <p className='mt-2 text-xs text-muted-foreground'>최근 {totalRecords}일 평균</p>
         </CardContent>
       </Card>
 
       {/* 방향 일치율 */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">방향 일치율</CardTitle>
+        <CardHeader className='pb-3'>
+          <CardTitle className='text-sm font-medium'>방향 일치율</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-baseline gap-2">
-            <div className="text-3xl font-bold text-green-600">{Math.round(directionMatchRate)}%</div>
+          <div className='flex items-baseline gap-2'>
+            <div className='text-3xl font-bold text-green-600'>{Math.round(directionMatchRate)}%</div>
           </div>
-          <Progress value={directionMatchRate} className="mt-2 h-2 [&>div]:bg-green-600" />
-          <p className="text-xs text-muted-foreground mt-2">
+          <Progress value={directionMatchRate} className='mt-2 h-2 [&>div]:bg-green-600' />
+          <p className='mt-2 text-xs text-muted-foreground'>
             {matchedRecords}/{totalRecords} 성공
           </p>
         </CardContent>
@@ -63,15 +62,15 @@ export function AccuracyStats({
 
       {/* 평균 오차율 */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">평균 오차율</CardTitle>
+        <CardHeader className='pb-3'>
+          <CardTitle className='text-sm font-medium'>평균 오차율</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-baseline gap-2">
-            <div className="text-3xl font-bold text-blue-600">{averageErrorRate.toFixed(1)}%</div>
+          <div className='flex items-baseline gap-2'>
+            <div className='text-3xl font-bold text-blue-600'>{averageErrorRate.toFixed(1)}%</div>
           </div>
-          <Progress value={averageErrorRate} className="mt-2 h-2 [&>div]:bg-blue-600" />
-          <p className="text-xs text-muted-foreground mt-2">낮을수록 좋음</p>
+          <Progress value={averageErrorRate} className='mt-2 h-2 [&>div]:bg-blue-600' />
+          <p className='mt-2 text-xs text-muted-foreground'>낮을수록 좋음</p>
         </CardContent>
       </Card>
     </div>

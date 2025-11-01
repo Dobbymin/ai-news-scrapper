@@ -2,8 +2,8 @@
  * Accuracy Widget - Model Hook
  * @description 정확도 데이터를 관리하는 훅
  */
-
 import { useState } from "react";
+
 import type { AccuracyRecord } from "./types";
 
 // TODO: 실제 API 연동 시 교체
@@ -56,14 +56,11 @@ interface UseAccuracyDataReturn {
 export function useAccuracyData(): UseAccuracyDataReturn {
   const [accuracyData] = useState<AccuracyRecord[]>(mockAccuracy);
 
-  const averageAccuracy =
-    accuracyData.reduce((sum, record) => sum + record.accuracy, 0) / accuracyData.length;
+  const averageAccuracy = accuracyData.reduce((sum, record) => sum + record.accuracy, 0) / accuracyData.length;
 
-  const directionMatchRate =
-    (accuracyData.filter((r) => r.directionMatch).length / accuracyData.length) * 100;
+  const directionMatchRate = (accuracyData.filter((r) => r.directionMatch).length / accuracyData.length) * 100;
 
-  const averageErrorRate =
-    accuracyData.reduce((sum, r) => sum + r.errorRate, 0) / accuracyData.length;
+  const averageErrorRate = accuracyData.reduce((sum, r) => sum + r.errorRate, 0) / accuracyData.length;
 
   return {
     accuracyData,

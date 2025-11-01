@@ -23,6 +23,11 @@ import { AccuracyStats } from "./AccuracyStats";
  * @description 정확도 검토 위젯
  */
 
+/**
+ * AccuracyWidget - Widget Main Component
+ * @description 정확도 검토 위젯
+ */
+
 export function AccuracyWidget() {
   const { accuracyData, averageAccuracy, directionMatchRate, averageErrorRate, loading, error } = useAccuracyData();
 

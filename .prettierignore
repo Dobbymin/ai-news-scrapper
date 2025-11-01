@@ -10,7 +10,8 @@ public
 *.config.js
 *.config.ts
 *.config.mjs
-# *.md
+.dockerignore
+
 
 # Git 관련 파일 무시
 .github

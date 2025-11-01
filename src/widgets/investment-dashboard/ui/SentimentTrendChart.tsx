@@ -7,6 +7,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
+/**
+ * SentimentTrendChart - Widget UI Component
+ * @description 감성 분석 추이를 파이 차트로 표시
+ */
+
 interface SentimentTrendChartProps {
   positiveCount: number;
   negativeCount: number;
@@ -46,7 +51,7 @@ export function SentimentTrendChart({ positiveCount, negativeCount, neutralCount
               cx='50%'
               cy='50%'
               labelLine={false}
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              label={(entry: { name: string; percent: number }) => `${entry.name} ${(entry.percent * 100).toFixed(0)}%`}
               outerRadius={80}
               fill='#8884d8'
               dataKey='value'

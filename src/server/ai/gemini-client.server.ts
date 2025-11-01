@@ -5,8 +5,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
  *
  * @description
  * Google Gemini API를 사용하여 뉴스 감성 분석을 수행합니다.
- * - 모델: gemini-2.5-pro
- * - 요청 한도: 60 요청/분
+ * - 모델: gemini-2.5-flash
+ * - 요청 한도: 15 요청/분 (무료 티어)
  * - 자동 재시도: 3회 (지수 백오프)
  */
 
@@ -36,7 +36,7 @@ export function initGeminiClient() {
 
   const apiKey = loadApiKey();
   genAI = new GoogleGenerativeAI(apiKey);
-  model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+  model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   console.log("✅ Gemini API 클라이언트 초기화 완료");
   return model;

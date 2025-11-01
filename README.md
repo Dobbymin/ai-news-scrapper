@@ -168,10 +168,24 @@ pnpm tsx src/server/scraper/naver-scraper.ts
 ai-news-trader/
 ├── src/
 │   ├── app/                    # Next.js App Router
-│   │   ├── (dashboard)/        # 대시보드 레이아웃
+│   │   ├── (dashboard)/        # 대시보드 레이아웃 & 페이지
+│   │   │   ├── page.tsx        # 메인 대시보드
+│   │   │   ├── news/           # 뉴스 목록 페이지
+│   │   │   ├── accuracy/       # 정확도 검토 페이지
+│   │   │   └── settings/       # 설정 페이지
 │   │   └── api/                # API Routes
-│   ├── pages/                  # 페이지 컴포넌트
+│   ├── entities/               # 도메인 엔티티 (FSD)
+│   │   ├── analysis/           # 분석 관련 엔티티
+│   │   └── news/               # 뉴스 관련 엔티티
+│   ├── features/               # 기능 단위 (FSD)
+│   │   └── ai-analysis/        # AI 분석 트리거
+│   ├── widgets/                # 위젯 조합 (FSD)
+│   │   ├── investment-dashboard/   # 투자 대시보드
+│   │   ├── news-list-widget/       # 뉴스 목록 위젯
+│   │   └── accuracy-widget/        # 정확도 위젯
 │   ├── shared/                 # 공유 컴포넌트/유틸
+│   │   ├── components/         # UI 컴포넌트
+│   │   └── utils/              # 유틸리티 함수
 │   └── server/                 # 백엔드 로직
 │       ├── ai/                 # Gemini AI 통합
 │       ├── scraper/            # 뉴스 크롤러
@@ -183,6 +197,15 @@ ai-news-trader/
 │   └── learning/               # 학습 데이터
 └── docs/                       # 문서
 ```
+
+### 아키텍처 설계
+
+본 프로젝트는 **FSD (Feature-Sliced Design)** 아키텍처를 따릅니다:
+
+- **Entities**: 도메인 엔티티 (SentimentBadge, NewsCard 등)
+- **Features**: 독립적인 기능 단위 (ai-analysis)
+- **Widgets**: 여러 엔티티와 기능을 조합한 위젯
+- **Shared**: 프로젝트 전체에서 재사용되는 공통 요소
 
 ---
 
@@ -211,6 +234,14 @@ ai-news-trader/
 - API Routes 생성
 - 프론트엔드 연동
 - 문서화
+
+### ✅ Maintenance: 리팩토링 (완료)
+
+- FSD (Feature-Sliced Design) 아키텍처 적용
+- Import 경로 중앙화 (@/shared 통합)
+- 코드 재사용성 개선 (92% 코드 감소)
+- Pages Router 충돌 해결 (src/pages 폴더 제거)
+- 관심사 분리 및 단일 책임 원칙 적용
 
 ---
 

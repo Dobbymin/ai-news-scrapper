@@ -4,6 +4,8 @@ import path from "path";
 import { News, NewsArraySchema } from "@/entities/news";
 import type { AnalysisResult } from "@/entities/analysis";
 import { AnalysisResultSchema } from "@/entities/analysis";
+import type { AccuracyLog } from "@/entities/accuracy";
+import type { LearningData } from "../utils/learning-data.server";
 
 /**
  * JSON 파일 저장소
@@ -218,4 +220,93 @@ export async function loadAnalysis(date: Date = new Date()): Promise<AnalysisRes
 export async function analysisExists(date: Date = new Date()): Promise<boolean> {
   const analysis = await loadAnalysis(date);
   return analysis !== null;
+}
+
+/**
+ * 시장 데이터를 JSON 파일에서 로드
+ *
+ * @param date 로드할 날짜 (기본값: 오늘)
+ * @returns 시장 데이터 (파일이 없으면 null)
+ */
+export async function loadMarketData(date: Date = new Date()): Promise<any | null> {
+  const dateStr = formatDate(date);
+  const fileName = `market-${dateStr}.json`;
+
+  return loadJson<any>("market", fileName);
+}
+
+/**
+ * 정확도 로그를 JSON 파일로 저장
+ *
+ * @param accuracyLog 저장할 정확도 로그
+ * @param date 저장 날짜 (기본값: 오늘)
+ * @returns 저장된 파일 경로
+ */
+export async function saveAccuracyLog(
+  accuracyLog: AccuracyLog,
+  date: Date = new Date()
+): Promise<string> {
+  const dateStr = formatDate(date);
+  const fileName = `accuracy-${dateStr}.json`;
+
+  return saveJson(accuracyLog, "accuracy", fileName);
+}
+
+/**
+ * 정확도 로그를 JSON 파일에서 로드
+ *
+ * @param date 로드할 날짜 (기본값: 오늘)
+ * @returns 정확도 로그 (파일이 없으면 null)
+ */
+export async function loadAccuracyLog(date: Date = new Date()): Promise<AccuracyLog | null> {
+  const dateStr = formatDate(date);
+  const fileName = `accuracy-${dateStr}.json`;
+
+  return loadJson<AccuracyLog>("accuracy", fileName);
+}
+
+/**
+ * 모든 정확도 로그 로드
+ *
+ * @returns 정확도 로그 배열
+ */
+export async function loadAllAccuracyLogs(): Promise<AccuracyLog[]> {
+  try {
+    const accuracyDir = path.join(DATA_DIR, "accuracy");
+    await ensureDirectory(accuracyDir);
+
+    const files = await fs.readdir(accuracyDir);
+    const accuracyFiles = files.filter((f) => f.startsWith("accuracy-") && f.endsWith(".json"));
+
+    const logs: AccuracyLog[] = [];
+    for (const file of accuracyFiles) {
+      const content = await fs.readFile(path.join(accuracyDir, file), "utf-8");
+      logs.push(JSON.parse(content) as AccuracyLog);
+    }
+
+    return logs.sort((a, b) => a.date.localeCompare(b.date));
+  } catch (error) {
+    console.error("❌ 정확도 로그 로드 실패:", error);
+    return [];
+  }
+}
+
+/**
+ * 학습 데이터를 JSON 파일로 저장 (누적)
+ *
+ * @param learningData 저장할 학습 데이터
+ * @returns 저장된 파일 경로
+ */
+export async function saveLearningData(learningData: LearningData): Promise<string> {
+  const fileName = "learning-data.json";
+  return saveJson(learningData, "learning", fileName);
+}
+
+/**
+ * 학습 데이터를 JSON 파일에서 로드
+ *
+ * @returns 학습 데이터 (파일이 없으면 null)
+ */
+export async function loadLearningData(): Promise<LearningData | null> {
+  return loadJson<LearningData>("learning", "learning-data.json");
 }

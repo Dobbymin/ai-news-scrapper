@@ -9,6 +9,7 @@ import { Alert, AlertDescription, Card, CardContent, CardDescription, CardHeader
 
 import { useAccuracyData } from "../model/useAccuracyData";
 
+import { AccuracyChart } from "./AccuracyChart";
 import { AccuracyRecordCard } from "./AccuracyRecordCard";
 import { AccuracyStats } from "./AccuracyStats";
 
@@ -70,6 +71,9 @@ export function AccuracyWidget() {
         totalRecords={accuracyData.length}
         matchedRecords={accuracyData.filter((r) => r.directionMatch).length}
       />
+
+      {/* 정확도 추이 차트 */}
+      <AccuracyChart data={accuracyData} />
 
       {/* 일별 정확도 기록 */}
       <Card>

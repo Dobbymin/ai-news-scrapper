@@ -11,6 +11,7 @@ import { useDashboardData } from "../model/useDashboardData";
 import { InvestmentIndexCard } from "./InvestmentIndexCard";
 import { SentimentSummaryCard } from "./SentimentSummaryCard";
 import { KeywordsCard } from "./KeywordsCard";
+import { SentimentTrendChart } from "./SentimentTrendChart";
 
 export function InvestmentDashboard() {
   const { analysisData, accuracy, loading, error } = useDashboardData();
@@ -92,8 +93,15 @@ export function InvestmentDashboard() {
         )}
       </div>
 
-      {/* 주요 키워드 */}
-      <KeywordsCard keywords={analysisData.keywords} />
+      {/* 감성 분포 차트 & 주요 키워드 */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <SentimentTrendChart
+          positiveCount={analysisData.summary.positive}
+          negativeCount={analysisData.summary.negative}
+          neutralCount={analysisData.summary.neutral}
+        />
+        <KeywordsCard keywords={analysisData.keywords} />
+      </div>
     </div>
   );
 }

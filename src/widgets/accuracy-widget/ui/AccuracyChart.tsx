@@ -9,6 +9,11 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 
 import type { AccuracyRecord } from "../model/types";
 
+/**
+ * AccuracyChart - Widget UI Component
+ * @description 정확도 추이를 라인 차트로 표시하는 컴포넌트
+ */
+
 interface AccuracyChartProps {
   data: AccuracyRecord[];
 }

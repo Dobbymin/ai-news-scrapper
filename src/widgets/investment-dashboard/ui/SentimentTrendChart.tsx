@@ -12,6 +12,11 @@ import { Cell, Legend, Pie, PieChart, PieLabelRenderProps, ResponsiveContainer, 
  * @description 감성 분석 추이를 파이 차트로 표시
  */
 
+/**
+ * SentimentTrendChart - Widget UI Component
+ * @description 감성 분석 추이를 파이 차트로 표시
+ */
+
 interface SentimentTrendChartProps {
   positiveCount: number;
   negativeCount: number;

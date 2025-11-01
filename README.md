@@ -101,13 +101,58 @@ AI News Trader는 실시간 경제 뉴스를 수집·분석하여 코인 및 주
 
 ## 🚀 시작하기
 
-### 1. 필수 요구사항
+### 방법 1: Docker로 실행 (권장) 🐳
+
+가장 빠르고 쉬운 방법입니다!
+
+#### 1. 필수 요구사항
+- Docker & Docker Compose
+- Google Gemini API 키 ([발급받기](https://ai.google.dev/))
+
+#### 2. 실행
+
+```bash
+# 저장소 클론
+git clone https://github.com/Dobbymin/ai-news-scrapper.git
+cd ai-news-scrapper
+
+# 환경 변수 설정
+cp .env.example .env.local
+# .env.local 파일을 열어 GEMINI_API_KEY를 입력하세요
+
+# Docker Compose로 실행
+docker-compose up -d
+
+# 로그 확인
+docker-compose logs -f
+```
+
+#### 3. 접속
+브라우저에서 [http://localhost:3000](http://localhost:3000) 접속
+
+#### 4. 중지/재시작
+```bash
+# 중지
+docker-compose down
+
+# 재시작
+docker-compose restart
+
+# 컨테이너 상태 확인
+docker-compose ps
+```
+
+---
+
+### 방법 2: 로컬 개발 환경
+
+#### 1. 필수 요구사항
 
 - Node.js 18.x 이상
 - pnpm (권장) 또는 npm
 - Google Gemini API 키 ([발급받기](https://ai.google.dev/))
 
-### 2. 설치
+#### 2. 설치
 
 ```bash
 # 저장소 클론
@@ -118,7 +163,7 @@ cd ai-news-scrapper
 pnpm install
 ```
 
-### 3. 환경 변수 설정
+#### 3. 환경 변수 설정
 
 ```bash
 # .env.local 파일 생성
@@ -129,7 +174,7 @@ cp .env.example .env.local
 GEMINI_API_KEY=your_api_key_here
 ```
 
-### 4. 개발 서버 실행
+#### 4. 개발 서버 실행
 
 ```bash
 pnpm dev

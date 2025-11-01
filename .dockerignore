@@ -6,7 +6,9 @@ README.md
 .next
 .git
 .gitignore
-data
 .env*.local
 .vscode
 .idea
+*.log
+coverage
+.DS_Store

@@ -106,6 +106,7 @@ AI News Trader는 실시간 경제 뉴스를 수집·분석하여 코인 및 주
 가장 빠르고 쉬운 방법입니다!
 
 #### 1. 필수 요구사항
+
 - Docker & Docker Compose
 - Google Gemini API 키 ([발급받기](https://ai.google.dev/))
 
@@ -128,9 +129,11 @@ docker-compose logs -f
 ```
 
 #### 3. 접속
+
 브라우저에서 [http://localhost:3000](http://localhost:3000) 접속
 
 #### 4. 중지/재시작
+
 ```bash
 # 중지
 docker-compose down

@@ -5,12 +5,13 @@
 import { Badge } from "@/shared";
 
 interface InvestmentGradeBadgeProps {
-  grade: string;
+  grade?: string;
   className?: string;
 }
 
 export function InvestmentGradeBadge({ grade, className }: InvestmentGradeBadgeProps) {
-  const getGradeColor = (grade: string) => {
+  const getGradeColor = (grade?: string) => {
+    if (!grade) return "bg-gray-400 text-white hover:bg-gray-400";
     if (grade.includes("매우 긍정")) return "bg-green-600 text-white hover:bg-green-600";
     if (grade.includes("긍정")) return "bg-green-500 text-white hover:bg-green-500";
     if (grade.includes("중립")) return "bg-gray-500 text-white hover:bg-gray-500";
@@ -18,5 +19,5 @@ export function InvestmentGradeBadge({ grade, className }: InvestmentGradeBadgeP
     return "bg-gray-400 text-white hover:bg-gray-400";
   };
 
-  return <Badge className={`${getGradeColor(grade)} ${className || ""}`}>{grade}</Badge>;
+  return <Badge className={`${getGradeColor(grade)} ${className || ""}`}>{grade || "등급 없음"}</Badge>;
 }

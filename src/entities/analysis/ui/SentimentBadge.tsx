@@ -7,7 +7,7 @@ import { Badge } from "@/shared";
 export type SentimentType = "positive" | "negative" | "neutral";
 
 interface SentimentBadgeProps {
-  sentiment: SentimentType;
+  sentiment?: SentimentType;
   className?: string;
 }
 
@@ -27,7 +27,9 @@ export function SentimentBadge({ sentiment, className }: SentimentBadgeProps) {
     },
   };
 
-  const { label, className: badgeClassName } = config[sentiment];
+  const { label, className: badgeClassName } = sentiment
+    ? config[sentiment]
+    : { label: "분석 중", className: "bg-gray-100 text-gray-800 hover:bg-gray-100" };
 
   return <Badge className={`${badgeClassName} ${className || ""}`}>{label}</Badge>;
 }

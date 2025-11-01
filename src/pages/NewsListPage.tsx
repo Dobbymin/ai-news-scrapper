@@ -60,10 +60,10 @@ export default function NewsListPage() {
 
       // 뉴스와 분석 결과 병합
       const merged: NewsWithAnalysis[] = news.map((item) => {
-        const analysisItem = analysisMap.get(item.id);
+        const analysisItem = analysisMap.get(item.id) as any;
         return {
           ...item,
-          sentiment: analysisItem?.sentiment || "neutral",
+          sentiment: (analysisItem?.sentiment as SentimentType) || "neutral",
           confidence: analysisItem?.confidence || 0,
           keywords: analysisItem?.keywords || [],
         };

@@ -1,25 +1,118 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import { Progress } from "@/shared/components/ui/progress";
 import { Alert, AlertDescription } from "@/shared/components/ui/alert";
 
+interface AnalysisData {
+  date: string;
+  totalNews: number;
+  investmentIndex: number;
+  grade: string;
+  recommendation: string;
+  summary: {
+    positive: number;
+    negative: number;
+    neutral: number;
+  };
+  keywords: string[];
+}
+
 /**
  * 메인 대시보드 페이지
  * @description 투자 지수, 감성 분석 요약, 정확도 추이를 한눈에 표시
  */
 export default function MainPage() {
-  // TODO: 실제 데이터는 API에서 가져오기
-  const investmentIndex = 55;
-  const sentiment = {
-    positive: 8,
-    negative: 6,
-    neutral: 6,
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const [accuracy, setAccuracy] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 분석 데이터 로드
+      const analysisRes = await fetch("/api/analysis/latest");
+      if (analysisRes.ok) {
+        const data = await analysisRes.json();
+        setAnalysisData(data);
+      }
+
+      // 정확도 데이터 로드
+      const accuracyRes = await fetch("/api/accuracy/logs?limit=1");
+      if (accuracyRes.ok) {
+        const logs = await accuracyRes.json();
+        if (logs && logs.length > 0) {
+          setAccuracy(logs[0].accuracy);
+        }
+      }
+    } catch (err) {
+      console.error("데이터 로드 실패:", err);
+      setError("데이터를 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
-  const accuracy = 70;
-  const lastUpdated = "2025-11-01";
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <div className="text-2xl">⏳</div>
+          <p className="text-muted-foreground">데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <Alert className="bg-red-50 border-red-200">
+        <AlertDescription className="text-red-800">
+          ⚠️ {error}
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  // 데이터 없음
+  if (!analysisData) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">투자 대시보드</h1>
+          <p className="text-muted-foreground mt-2">
+            AI 뉴스 감성 분석을 통한 투자 지수 및 시장 동향을 확인하세요.
+          </p>
+        </div>
+
+        <Alert>
+          <AlertDescription>
+            📰 아직 분석된 뉴스가 없습니다. "오늘 뉴스 수집" 버튼을 클릭하여 시작하세요.
+          </AlertDescription>
+        </Alert>
+
+        <Button size="lg" className="gap-2">
+          📰 오늘 뉴스 수집
+        </Button>
+      </div>
+    );
+  }
+
+  const investmentIndex = analysisData.investmentIndex;
+  const sentiment = analysisData.summary;
+  const lastUpdated = analysisData.date;
 
   const getIndexGrade = (index: number) => {
     if (index >= 80) return { grade: "A+", color: "text-green-600", bg: "bg-green-50" };

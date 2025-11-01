@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 import { Progress } from "@/shared/components/ui/progress";
+import { Alert, AlertDescription } from "@/shared/components/ui/alert";
 
 type SentimentType = "positive" | "negative" | "neutral";
 
@@ -27,45 +28,14 @@ interface NewsItem {
   title: string;
   source: string;
   publishedAt: string;
-  sentiment: SentimentType;
-  confidence: number;
-  keywords: string[];
   url: string;
 }
 
-// 임시 데이터
-const mockNews: NewsItem[] = [
-  {
-    id: 1,
-    title: "젠슨 황 \"삼성전자·SK하이닉스 모두 필요해…뛰어난 역량의 파트너들\"",
-    source: "한국경제",
-    publishedAt: "2025-11-01T08:00:00Z",
-    sentiment: "positive",
-    confidence: 95,
-    keywords: ["젠슨 황", "엔비디아", "삼성전자"],
-    url: "https://news.naver.com",
-  },
-  {
-    id: 2,
-    title: "뉴욕 증시, 아마존·애플 호실적에 동반 상승 마감",
-    source: "연합뉴스",
-    publishedAt: "2025-11-01T07:30:00Z",
-    sentiment: "positive",
-    confidence: 95,
-    keywords: ["뉴욕 증시", "아마존", "애플"],
-    url: "https://news.naver.com",
-  },
-  {
-    id: 3,
-    title: "구직자 10명 중 8명, 중소기업 지원 아예 안 한다",
-    source: "한국경제",
-    publishedAt: "2025-11-01T06:00:00Z",
-    sentiment: "negative",
-    confidence: 85,
-    keywords: ["구직", "중소기업", "고용"],
-    url: "https://news.naver.com",
-  },
-];
+interface NewsWithAnalysis extends NewsItem {
+  sentiment: SentimentType;
+  confidence: number;
+  keywords: string[];
+}
 
 /**
  * 뉴스 목록 페이지
@@ -73,11 +43,59 @@ const mockNews: NewsItem[] = [
  */
 export default function NewsListPage() {
   const [filter, setFilter] = useState<SentimentType | "all">("all");
+  const [newsData, setNewsData] = useState<NewsWithAnalysis[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchNewsData();
+  }, []);
+
+  const fetchNewsData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 뉴스 원본 데이터 로드
+      const newsRes = await fetch("/api/news/latest");
+      const news: NewsItem[] = newsRes.ok ? await newsRes.json() : [];
+
+      // 분석 데이터 로드
+      const analysisRes = await fetch("/api/analysis/latest");
+      if (!analysisRes.ok) {
+        setNewsData([]);
+        return;
+      }
+
+      const analysis = await analysisRes.json();
+      const analysisMap = new Map(
+        analysis.newsAnalysis?.map((a: any) => [a.newsId, a]) || []
+      );
+
+      // 뉴스와 분석 결과 병합
+      const merged: NewsWithAnalysis[] = news.map((item) => {
+        const analysisItem = analysisMap.get(item.id);
+        return {
+          ...item,
+          sentiment: analysisItem?.sentiment || "neutral",
+          confidence: analysisItem?.confidence || 0,
+          keywords: analysisItem?.keywords || [],
+        };
+      });
+
+      setNewsData(merged);
+    } catch (err) {
+      console.error("뉴스 데이터 로드 실패:", err);
+      setError("뉴스 데이터를 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredNews =
     filter === "all"
-      ? mockNews
-      : mockNews.filter((news) => news.sentiment === filter);
+      ? newsData
+      : newsData.filter((news) => news.sentiment === filter);
 
   const getSentimentBadge = (sentiment: SentimentType) => {
     const config = {
@@ -98,6 +116,27 @@ export default function NewsListPage() {
     }).format(date);
   };
 
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <div className="text-2xl">⏳</div>
+          <p className="text-muted-foreground">뉴스 데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <Alert className="bg-red-50 border-red-200">
+        <AlertDescription className="text-red-800">⚠️ {error}</AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* 페이지 헤더 */}
@@ -108,52 +147,64 @@ export default function NewsListPage() {
         </p>
       </div>
 
-      {/* 필터 버튼 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>필터</CardTitle>
-          <CardDescription>감성별로 뉴스를 필터링하세요.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2">
-            <Button
-              variant={filter === "all" ? "default" : "outline"}
-              onClick={() => setFilter("all")}
-            >
-              전체 ({mockNews.length})
-            </Button>
-            <Button
-              variant={filter === "positive" ? "default" : "outline"}
-              onClick={() => setFilter("positive")}
-              className={
-                filter === "positive"
-                  ? "bg-green-600 hover:bg-green-700"
-                  : ""
-              }
-            >
-              긍정 ({mockNews.filter((n) => n.sentiment === "positive").length})
-            </Button>
-            <Button
-              variant={filter === "negative" ? "default" : "outline"}
-              onClick={() => setFilter("negative")}
-              className={
-                filter === "negative" ? "bg-red-600 hover:bg-red-700" : ""
-              }
-            >
-              부정 ({mockNews.filter((n) => n.sentiment === "negative").length})
-            </Button>
-            <Button
-              variant={filter === "neutral" ? "default" : "outline"}
-              onClick={() => setFilter("neutral")}
-              className={
-                filter === "neutral" ? "bg-gray-600 hover:bg-gray-700" : ""
-              }
-            >
-              중립 ({mockNews.filter((n) => n.sentiment === "neutral").length})
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {newsData.length === 0 && (
+        <Alert>
+          <AlertDescription>
+            📰 아직 분석된 뉴스가 없습니다.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {newsData.length > 0 && (
+        <>
+          {/* 필터 버튼 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>필터</CardTitle>
+              <CardDescription>감성별로 뉴스를 필터링하세요.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <Button
+                  variant={filter === "all" ? "default" : "outline"}
+                  onClick={() => setFilter("all")}
+                >
+                  전체 ({newsData.length})
+                </Button>
+                <Button
+                  variant={filter === "positive" ? "default" : "outline"}
+                  onClick={() => setFilter("positive")}
+                  className={
+                    filter === "positive"
+                      ? "bg-green-600 hover:bg-green-700"
+                      : ""
+                  }
+                >
+                  긍정 ({newsData.filter((n) => n.sentiment === "positive").length})
+                </Button>
+                <Button
+                  variant={filter === "negative" ? "default" : "outline"}
+                  onClick={() => setFilter("negative")}
+                  className={
+                    filter === "negative" ? "bg-red-600 hover:bg-red-700" : ""
+                  }
+                >
+                  부정 ({newsData.filter((n) => n.sentiment === "negative").length})
+                </Button>
+                <Button
+                  variant={filter === "neutral" ? "default" : "outline"}
+                  onClick={() => setFilter("neutral")}
+                  className={
+                    filter === "neutral" ? "bg-gray-600 hover:bg-gray-700" : ""
+                  }
+                >
+                  중립 ({newsData.filter((n) => n.sentiment === "neutral").length})
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
 
       {/* 뉴스 테이블 */}
       <Card>

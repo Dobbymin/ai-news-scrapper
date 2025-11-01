@@ -221,6 +221,39 @@ export async function analysisExists(date: Date = new Date()): Promise<boolean> 
 }
 
 /**
+ * 가장 최근의 분석 결과를 로드
+ *
+ * @returns 가장 최근 분석 결과 (없으면 null)
+ */
+export async function loadLatestAnalysis(): Promise<AnalysisResult | null> {
+  const analysisDir = path.join(DATA_DIR, "analysis");
+
+  try {
+    await ensureDirectory(analysisDir);
+    const files = await fs.readdir(analysisDir);
+
+    // analysis-YYYY-MM-DD.json 형식의 파일만 필터링
+    const analysisFiles = files
+      .filter((file) => file.startsWith("analysis-") && file.endsWith(".json"))
+      .sort()
+      .reverse(); // 최신순 정렬
+
+    if (analysisFiles.length === 0) {
+      return null;
+    }
+
+    // 가장 최근 파일 로드
+    const latestFile = analysisFiles[0];
+    const filePath = path.join(analysisDir, latestFile);
+    const content = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(content) as AnalysisResult;
+  } catch (error) {
+    console.error("최근 분석 결과 로드 실패:", error);
+    return null;
+  }
+}
+
+/**
  * 시장 데이터를 JSON 파일에서 로드
  *
  * @param date 로드할 날짜 (기본값: 오늘)
@@ -280,6 +313,37 @@ export async function loadAllAccuracyLogs(): Promise<AccuracyLog[]> {
     }
 
     return logs.sort((a, b) => a.date.localeCompare(b.date));
+  } catch (error) {
+    console.error("❌ 정확도 로그 로드 실패:", error);
+    return [];
+  }
+}
+
+/**
+ * 최근 N개의 정확도 로그 로드
+ *
+ * @param limit 로드할 로그 개수 (기본값: 10)
+ * @returns 정확도 로그 배열 (최신순)
+ */
+export async function loadAccuracyLogs(limit: number = 10): Promise<AccuracyLog[]> {
+  try {
+    const accuracyDir = path.join(DATA_DIR, "accuracy");
+    await ensureDirectory(accuracyDir);
+
+    const files = await fs.readdir(accuracyDir);
+    const accuracyFiles = files
+      .filter((f) => f.startsWith("accuracy-") && f.endsWith(".json"))
+      .sort()
+      .reverse() // 최신순
+      .slice(0, limit); // 상위 N개만
+
+    const logs: AccuracyLog[] = [];
+    for (const file of accuracyFiles) {
+      const content = await fs.readFile(path.join(accuracyDir, file), "utf-8");
+      logs.push(JSON.parse(content) as AccuracyLog);
+    }
+
+    return logs;
   } catch (error) {
     console.error("❌ 정확도 로그 로드 실패:", error);
     return [];

@@ -2,6 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 
 import { News, NewsArraySchema } from "@/entities/news";
+import type { AnalysisResult } from "@/entities/analysis";
+import { AnalysisResultSchema } from "@/entities/analysis";
 
 /**
  * JSON 파일 저장소
@@ -171,4 +173,49 @@ export async function loadJson<T>(subDir: string, fileName: string): Promise<T |
     }
     throw error;
   }
+}
+
+/**
+ * 분석 결과를 JSON 파일로 저장
+ *
+ * @param analysis 저장할 분석 결과
+ * @param date 저장 날짜 (기본값: 오늘)
+ * @returns 저장된 파일 경로
+ */
+export async function saveAnalysis(
+  analysis: AnalysisResult,
+  date: Date = new Date()
+): Promise<string> {
+  // 유효성 검증
+  const validated = AnalysisResultSchema.parse(analysis);
+
+  // 파일 경로 생성
+  const dateStr = formatDate(date);
+  const fileName = `analysis-${dateStr}.json`;
+
+  return saveJson(validated, "analysis", fileName);
+}
+
+/**
+ * 분석 결과를 JSON 파일에서 로드
+ *
+ * @param date 로드할 날짜 (기본값: 오늘)
+ * @returns 분석 결과 (파일이 없으면 null)
+ */
+export async function loadAnalysis(date: Date = new Date()): Promise<AnalysisResult | null> {
+  const dateStr = formatDate(date);
+  const fileName = `analysis-${dateStr}.json`;
+
+  return loadJson<AnalysisResult>("analysis", fileName);
+}
+
+/**
+ * 특정 날짜의 분석 결과가 존재하는지 확인
+ *
+ * @param date 확인할 날짜 (기본값: 오늘)
+ * @returns 존재 여부
+ */
+export async function analysisExists(date: Date = new Date()): Promise<boolean> {
+  const analysis = await loadAnalysis(date);
+  return analysis !== null;
 }

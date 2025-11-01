@@ -18,7 +18,42 @@ import { AccuracyStats } from "./AccuracyStats";
  */
 
 export function AccuracyWidget() {
-  const { accuracyData, averageAccuracy, directionMatchRate, averageErrorRate } = useAccuracyData();
+  const { accuracyData, averageAccuracy, directionMatchRate, averageErrorRate, loading, error } = useAccuracyData();
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center py-12'>
+        <div className='text-center'>
+          <div className='text-lg font-medium'>정확도 데이터 로딩 중...</div>
+          <div className='mt-2 text-sm text-muted-foreground'>잠시만 기다려주세요.</div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <Alert className='border-red-200 bg-red-50'>
+        <AlertDescription className='text-red-800'>
+          ❌ <strong>오류 발생:</strong> {error}
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  // 데이터 없음
+  if (accuracyData.length === 0) {
+    return (
+      <Alert className='border-yellow-200 bg-yellow-50'>
+        <AlertDescription className='text-yellow-800'>
+          📊 <strong>정확도 데이터가 없습니다.</strong> AI 분석을 실행한 후 다음날 시장 결과와 비교하여 정확도를
+          확인할 수 있습니다.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className='space-y-8'>

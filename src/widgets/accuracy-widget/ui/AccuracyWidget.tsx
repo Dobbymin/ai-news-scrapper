@@ -7,6 +7,8 @@
 
 import { Alert, AlertDescription, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared";
 
+import { LearningButton } from "@/features/learning";
+
 import { useAccuracyData } from "../model/useAccuracyData";
 
 import { AccuracyChart } from "./AccuracyChart";
@@ -126,11 +128,27 @@ export function AccuracyWidget() {
         </CardContent>
       </Card>
 
+      {/* 학습 데이터 업데이트 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>🧠 자동 학습</CardTitle>
+          <CardDescription>정확도 데이터를 기반으로 AI가 학습합니다.</CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div className='space-y-2 text-sm text-muted-foreground'>
+            <p>• 성공/실패 패턴 분석: 어떤 상황에서 예측이 정확했는지 학습</p>
+            <p>• 키워드 패턴 학습: 특정 키워드와 시장 반응의 상관관계 파악</p>
+            <p>• 개선 영역 식별: 예측 정확도가 낮은 부분을 자동으로 감지</p>
+          </div>
+          <LearningButton />
+        </CardContent>
+      </Card>
+
       {/* 개선 제안 */}
       <Alert>
         <AlertDescription>
-          💡 <strong>AI 학습 진행 중:</strong> 정확도가 지속적으로 개선되고 있습니다. 매일 정확도를 검토하여 AI 성능을
-          높여보세요.
+          💡 <strong>자동 학습 안내:</strong> 매일 자동으로 정확도를 계산하고 학습 데이터를 업데이트하려면 GitHub
+          Actions를 설정하세요. 또는 위 버튼으로 수동 업데이트할 수 있습니다.
         </AlertDescription>
       </Alert>
     </div>

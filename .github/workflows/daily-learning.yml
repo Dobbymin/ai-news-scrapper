@@ -1,0 +1,57 @@
+name: Daily AI Learning
+
+on:
+  # 매일 오후 4시 (KST 기준, UTC 7시) 자동 실행
+  schedule:
+    - cron: "0 7 * * *"
+  
+  # 수동 실행도 가능
+  workflow_dispatch:
+
+jobs:
+  learning:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Start server
+        run: |
+          pnpm start &
+          sleep 10
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Run daily learning
+        run: pnpm tsx src/server/automation/daily-learning.ts
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Commit and push learning data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/
+          git diff --staged --quiet || git commit -m "chore: 자동 학습 데이터 업데이트 [skip ci]"
+          git push
+        continue-on-error: true

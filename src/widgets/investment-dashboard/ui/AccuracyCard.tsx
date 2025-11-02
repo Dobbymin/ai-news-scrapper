@@ -37,7 +37,7 @@ export function AccuracyCard({ accuracy }: AccuracyCardProps) {
         <Progress value={accuracy} className='h-3' />
         <div className='space-y-1 text-sm text-muted-foreground'>
           <p>• 예측 방향과 실제 시장 변동 방향 비교</p>
-          <p>• 매일 자동으로 학습하여 정확도 개선</p>
+          <p>• 성공/실패 패턴을 학습하여 지속적으로 개선</p>
         </div>
       </CardContent>
     </Card>

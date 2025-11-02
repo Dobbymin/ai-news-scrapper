@@ -23,11 +23,6 @@ import { AccuracyStats } from "./AccuracyStats";
  * @description 정확도 검토 위젯
  */
 
-/**
- * AccuracyWidget - Widget Main Component
- * @description 정확도 검토 위젯
- */
-
 export function AccuracyWidget() {
   const { accuracyData, averageAccuracy, directionMatchRate, averageErrorRate, loading, error } = useAccuracyData();
 
@@ -84,8 +79,8 @@ export function AccuracyWidget() {
             <div className='flex gap-2'>
               <span className='font-semibold text-blue-600'>2️⃣</span>
               <div>
-                <strong>실제 시장 결과 수집:</strong> 다음날 암호화폐(비트코인, 이더리움)와 주요 주식 시장의 실제 변동률을
-                측정합니다.
+                <strong>실제 시장 결과 수집:</strong> 다음날 암호화폐(비트코인, 이더리움)와 주요 주식 시장의 실제
+                변동률을 측정합니다.
               </div>
             </div>
             <div className='flex gap-2'>

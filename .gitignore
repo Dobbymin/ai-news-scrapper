@@ -41,7 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 # ai-news-trader specific
-/data/
 .env.local
 
 # vibe coding assistant

@@ -22,6 +22,11 @@ import { SentimentTrendChart } from "./SentimentTrendChart";
  * @description 투자 지수, 감성 분석, 키워드를 조합한 대시보드 위젯
  */
 
+/**
+ * InvestmentDashboard - Widget Main Component
+ * @description 투자 지수, 감성 분석, 키워드를 조합한 대시보드 위젯
+ */
+
 export function InvestmentDashboard() {
   const { analysisData, accuracy, loading, error } = useDashboardData();
 

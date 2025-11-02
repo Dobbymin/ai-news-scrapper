@@ -12,14 +12,12 @@ export function AnalyzeButton() {
   return (
     <div className='space-y-4'>
       <Button onClick={runAnalysis} disabled={analyzing} size='lg' className='w-full sm:w-auto'>
-        {analyzing ? "⏳ 분석 중..." : "📰 오늘 뉴스 수집"}
+        {analyzing ? "⏳ 수집 및 분석 중..." : "📰 오늘 뉴스 수집"}
       </Button>
 
       {success && (
         <Alert className='border-green-200 bg-green-50'>
-          <AlertDescription className='text-green-800'>
-            ✅ 분석이 완료되었습니다! 페이지를 새로고침합니다...
-          </AlertDescription>
+          <AlertDescription className='text-green-800'>✅ 수집 및 분석이 완료되었습니다! 페이지를 새로고침합니다...</AlertDescription>
         </Alert>
       )}
 

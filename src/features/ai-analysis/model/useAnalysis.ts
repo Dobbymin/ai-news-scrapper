@@ -22,14 +22,15 @@ export function useAnalysis(): UseAnalysisReturn {
       setError(null);
       setSuccess(false);
 
-      const response = await fetch("/api/analyze/run", {
+      // 뉴스 수집 + 분석 일괄 실행 API 호출
+      const response = await fetch("/api/news/scrape-and-analyze", {
         method: "POST",
       });
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || "분석 실행에 실패했습니다.");
+        throw new Error(result.error || "뉴스 수집/분석 실행에 실패했습니다.");
       }
 
       setSuccess(true);

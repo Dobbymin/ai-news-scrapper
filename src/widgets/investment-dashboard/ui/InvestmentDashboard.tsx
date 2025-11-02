@@ -11,6 +11,7 @@ import { AnalyzeButton } from "@/features/ai-analysis";
 
 import { useDashboardData } from "../model/useDashboardData";
 
+import { AccuracyCard } from "./AccuracyCard";
 import { InvestmentIndexCard } from "./InvestmentIndexCard";
 import { KeywordsCard } from "./KeywordsCard";
 import { SentimentSummaryCard } from "./SentimentSummaryCard";
@@ -88,17 +89,7 @@ export function InvestmentDashboard() {
           totalNews={analysisData.totalNews}
         />
 
-        {accuracy !== null && (
-          <Alert>
-            <AlertDescription>
-              <div className='space-y-2'>
-                <div className='font-semibold'>🎯 AI 정확도</div>
-                <div className='text-2xl font-bold text-blue-600'>{accuracy}%</div>
-                <div className='text-sm text-muted-foreground'>최근 예측 정확도입니다.</div>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
+        {accuracy !== null && <AccuracyCard accuracy={accuracy} />}
       </div>
 
       {/* 감성 분포 차트 & 주요 키워드 */}
@@ -108,7 +99,7 @@ export function InvestmentDashboard() {
           negativeCount={analysisData.summary.negative}
           neutralCount={analysisData.summary.neutral}
         />
-        <KeywordsCard keywords={analysisData.keywords} />
+        <KeywordsCard keywords={analysisData.keywords} totalNews={analysisData.totalNews} />
       </div>
     </div>
   );

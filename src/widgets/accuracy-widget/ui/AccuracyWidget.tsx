@@ -68,6 +68,44 @@ export function AccuracyWidget() {
 
   return (
     <div className='space-y-8'>
+      {/* 정확도 계산 방법 설명 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>📊 AI 정확도 평가 방법</CardTitle>
+        </CardHeader>
+        <CardContent className='space-y-3'>
+          <div className='space-y-2 text-sm'>
+            <div className='flex gap-2'>
+              <span className='font-semibold text-blue-600'>1️⃣</span>
+              <div>
+                <strong>예측 투자 지수 산출:</strong> AI가 당일 뉴스를 분석하여 0-100% 투자 지수를 예측합니다.
+              </div>
+            </div>
+            <div className='flex gap-2'>
+              <span className='font-semibold text-blue-600'>2️⃣</span>
+              <div>
+                <strong>실제 시장 결과 수집:</strong> 다음날 암호화폐(비트코인, 이더리움)와 주요 주식 시장의 실제 변동률을
+                측정합니다.
+              </div>
+            </div>
+            <div className='flex gap-2'>
+              <span className='font-semibold text-blue-600'>3️⃣</span>
+              <div>
+                <strong>방향 일치 여부:</strong> 예측이 긍정적(50% 이상)일 때 시장이 상승했는지, 부정적일 때 하락했는지
+                확인합니다.
+              </div>
+            </div>
+            <div className='flex gap-2'>
+              <span className='font-semibold text-blue-600'>4️⃣</span>
+              <div>
+                <strong>정확도 계산:</strong> 100% - |예측 지수 - 실제 변동률|로 오차율을 계산하고, 방향 일치율과 함께
+                종합 평가합니다.
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* 전체 통계 */}
       <AccuracyStats
         averageAccuracy={averageAccuracy}

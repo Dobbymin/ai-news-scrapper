@@ -1,6 +1,9 @@
 import type { AnalysisProgress, SentimentAnalysis } from "@/entities/analysis";
 import type { News } from "@/entities/news";
 
+import { loadLearningData } from "../storage/json-store.server";
+import type { LearningData } from "../utils/learning-data.server";
+
 import { generateContent, manageRateLimit, parseJsonResponse } from "./gemini-client.server";
 
 /**
@@ -14,23 +17,74 @@ import { generateContent, manageRateLimit, parseJsonResponse } from "./gemini-cl
  */
 
 /**
- * 감성 분석 프롬프트 생성
- * @param news 분석할 뉴스
- * @returns 프롬프트 문자열
+ * Few-shot Learning 예시 생성
+ * @param learningData 학습 데이터
+ * @returns Few-shot 예시 문자열
  */
-function createSentimentPrompt(news: News): string {
+function createFewShotExamples(learningData: LearningData | null): string {
+  if (!learningData || learningData.successCases.length === 0) {
+    // 학습 데이터가 없으면 기본 예시 사용
+    return `
+[예시 1]
+제목: "한국은행, 기준금리 0.25%p 인하"
+분석:
+{
+  "sentiment": "positive",
+  "confidence": 90,
+  "keywords": ["금리 인하", "유동성 증가", "투자 심리"],
+  "reason": "금리 인하는 유동성 증가를 유발하여 주식과 암호화폐 시장에 긍정적 영향을 미칩니다."
+}
+
+[예시 2]
+제목: "미국 SEC, 암호화폐 규제 강화 방침"
+분석:
+{
+  "sentiment": "negative",
+  "confidence": 85,
+  "keywords": ["SEC", "규제 강화", "암호화폐"],
+  "reason": "규제 강화는 암호화폐 시장 참여자들의 불안감을 증가시켜 단기 하락 압력으로 작용합니다."
+}
+
+[예시 3]
+제목: "삼성전자, 신제품 발표회 개최"
+분석:
+{
+  "sentiment": "neutral",
+  "confidence": 60,
+  "keywords": ["삼성전자", "신제품"],
+  "reason": "신제품 발표는 일반적인 기업 활동으로 시장 전체에 미치는 영향은 제한적입니다."
+}`;
+  }
+
+  // 학습 데이터에서 성공률이 높은 사례 선택
+  const topSuccessCases = learningData.successCases
+    .sort((a, b) => b.accuracy - a.accuracy)
+    .slice(0, 3);
+
+  if (topSuccessCases.length === 0) {
+    // 성공 사례가 없으면 기본 예시 사용
+    return createFewShotExamples(null);
+  }
+
+  // 성공 사례를 예시로 변환
+  const examples = topSuccessCases
+    .map((successCase, index) => {
+      const sentiment = successCase.investmentIndex >= 60 ? "positive" : 
+                       successCase.investmentIndex <= 40 ? "negative" : "neutral";
+      
+      return `
+[학습된 성공 패턴 ${index + 1} - 정확도 ${successCase.accuracy}%]
+키워드: ${successCase.keywords.join(", ")}
+투자 지수: ${successCase.investmentIndex}%
+결과: ${sentiment} 예측 성공 (실제 시장도 ${sentiment === "positive" ? "상승" : sentiment === "negative" ? "하락" : "중립"})`;
+    })
+    .join("\n");
+
   return `
-당신은 금융 시장 전문 분석가입니다. 다음 뉴스를 분석하여 코인 및 주식 시장에 미칠 영향을 판단하세요.
+[AI가 학습한 성공 패턴]
+${examples}
 
-[분석 기준]
-- positive(긍정): 금리 인하, 실적 개선, 규제 완화, 긍정적 전망 등
-- negative(부정): 금리 인상, 실적 악화, 규제 강화, 부정적 전망 등  
-- neutral(중립): 시장에 직접적 영향이 없는 단순 정보성 뉴스
-
-[뉴스 정보]
-제목: ${news.title}
-본문: ${news.content}
-출처: ${news.source}
+위 성공 패턴을 참고하여 아래 기본 예시를 활용하세요.
 
 [예시 1]
 제목: "한국은행, 기준금리 0.25%p 인하"
@@ -60,7 +114,32 @@ function createSentimentPrompt(news: News): string {
   "confidence": 60,
   "keywords": ["삼성전자", "신제품"],
   "reason": "신제품 발표는 일반적인 기업 활동으로 시장 전체에 미치는 영향은 제한적입니다."
+}`;
 }
+
+/**
+ * 감성 분석 프롬프트 생성
+ * @param news 분석할 뉴스
+ * @param learningData 학습 데이터 (Few-shot Learning용)
+ * @returns 프롬프트 문자열
+ */
+function createSentimentPrompt(news: News, learningData: LearningData | null = null): string {
+  const fewShotExamples = createFewShotExamples(learningData);
+  
+  return `
+당신은 금융 시장 전문 분석가입니다. 다음 뉴스를 분석하여 코인 및 주식 시장에 미칠 영향을 판단하세요.
+
+[분석 기준]
+- positive(긍정): 금리 인하, 실적 개선, 규제 완화, 긍정적 전망 등
+- negative(부정): 금리 인상, 실적 악화, 규제 강화, 부정적 전망 등  
+- neutral(중립): 시장에 직접적 영향이 없는 단순 정보성 뉴스
+
+${fewShotExamples}
+
+[분석할 뉴스]
+제목: ${news.title}
+본문: ${news.content}
+출처: ${news.source}
 
 위 뉴스를 분석하여 아래 JSON 형식으로 응답하세요. 반드시 JSON만 출력하세요.
 {
@@ -75,12 +154,16 @@ function createSentimentPrompt(news: News): string {
 /**
  * 단일 뉴스 감성 분석
  * @param news 분석할 뉴스
+ * @param learningData 학습 데이터 (Few-shot Learning용)
  * @returns 감성 분석 결과
  */
-export async function analyzeSingleNews(news: News): Promise<SentimentAnalysis> {
+export async function analyzeSingleNews(
+  news: News,
+  learningData: LearningData | null = null,
+): Promise<SentimentAnalysis> {
   console.log(`📊 뉴스 분석 중: [${news.id}] ${news.title}`);
 
-  const prompt = createSentimentPrompt(news);
+  const prompt = createSentimentPrompt(news, learningData);
   const response = await generateContent(prompt);
 
   // JSON 응답 파싱
@@ -116,7 +199,7 @@ export async function analyzeSingleNews(news: News): Promise<SentimentAnalysis> 
 }
 
 /**
- * 배치 뉴스 감성 분석
+ * 배치 뉴스 감성 분석 (Few-shot Learning 적용)
  * @param newsList 분석할 뉴스 배열
  * @param onProgress 진행 상황 콜백
  * @returns 감성 분석 결과 배열
@@ -127,6 +210,21 @@ export async function analyzeNewsArray(
 ): Promise<SentimentAnalysis[]> {
   console.log(`\n📊 감성 분석 시작: 총 ${newsList.length}개 뉴스`);
   console.log("━".repeat(50));
+
+  // 학습 데이터 로드 (Few-shot Learning용)
+  let learningData: LearningData | null = null;
+  try {
+    learningData = await loadLearningData();
+    if (learningData) {
+      console.log(`🧠 학습 데이터 로드 성공: ${learningData.totalCases}개 사례`);
+      console.log(`  - 성공 사례: ${learningData.successCases.length}개`);
+      console.log(`  - 평균 정확도: ${learningData.summary.avgAccuracy}%`);
+    } else {
+      console.log(`📝 학습 데이터 없음 - 기본 예시 사용`);
+    }
+  } catch (error) {
+    console.log(`📝 학습 데이터 로드 실패 - 기본 예시 사용`);
+  }
 
   const results: SentimentAnalysis[] = [];
 
@@ -144,7 +242,7 @@ export async function analyzeNewsArray(
     }
 
     try {
-      const result = await analyzeSingleNews(news);
+      const result = await analyzeSingleNews(news, learningData);
       results.push(result);
 
       // 요청 한도 관리 (60 요청/분)

@@ -1,0 +1,68 @@
+{
+  "createdAt": "2025-11-02T11:03:37.005Z",
+  "totalCases": 1,
+  "successCases": [
+    {
+      "date": "2025-11-01",
+      "accuracy": 70,
+      "investmentIndex": 56.8,
+      "keywords": [
+        "젠슨 황",
+        "엔비디아",
+        "삼성전자",
+        "gpu",
+        "기술 협력"
+      ],
+      "positiveRatio": 45,
+      "avgConfidence": 84.3,
+      "newsCount": 20
+    }
+  ],
+  "failureCases": [],
+  "keywordPatterns": [
+    {
+      "keyword": "젠슨 황",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "엔비디아",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "삼성전자",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "gpu",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "기술 협력",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    }
+  ],
+  "summary": {
+    "avgAccuracy": 70,
+    "directionAccuracy": 100,
+    "successCount": 1,
+    "failureCount": 0,
+    "topKeywords": [
+      "젠슨 황",
+      "엔비디아",
+      "삼성전자",
+      "gpu",
+      "기술 협력"
+    ],
+    "improvementAreas": []
+  }
+}

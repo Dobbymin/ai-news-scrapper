@@ -36,7 +36,11 @@ export function KeywordsCard({ keywords, totalNews }: KeywordsCardProps) {
         <div className='flex flex-wrap gap-2'>
           {keywords.length > 0 ? (
             keywords.map((keyword, index) => (
-              <Badge key={keyword} variant='outline' className={`px-3 py-1 ${getKeywordSize(index)} ${getKeywordColor(index)}`}>
+              <Badge
+                key={keyword}
+                variant='outline'
+                className={`px-3 py-1 ${getKeywordSize(index)} ${getKeywordColor(index)}`}
+              >
                 {keyword}
               </Badge>
             ))

@@ -1,11 +1,11 @@
 /**
  * 자동 학습 파이프라인
- * 
+ *
  * 이 스크립트는 매일 실행되어야 합니다:
  * 1. 시장 데이터 수집 (오늘의 실제 결과)
  * 2. 정확도 계산 (어제의 예측 vs 오늘의 실제)
  * 3. 학습 데이터 업데이트
- * 
+ *
  * 실행 방법:
  * - 수동: pnpm tsx src/server/automation/daily-learning.ts
  * - GitHub Actions: .github/workflows/daily-learning.yml

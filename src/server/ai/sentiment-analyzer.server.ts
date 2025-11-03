@@ -57,9 +57,7 @@ function createFewShotExamples(learningData: LearningData | null): string {
   }
 
   // 학습 데이터에서 성공률이 높은 사례 선택
-  const topSuccessCases = learningData.successCases
-    .sort((a, b) => b.accuracy - a.accuracy)
-    .slice(0, 3);
+  const topSuccessCases = learningData.successCases.sort((a, b) => b.accuracy - a.accuracy).slice(0, 3);
 
   if (topSuccessCases.length === 0) {
     // 성공 사례가 없으면 기본 예시 사용
@@ -69,9 +67,9 @@ function createFewShotExamples(learningData: LearningData | null): string {
   // 성공 사례를 예시로 변환
   const examples = topSuccessCases
     .map((successCase, index) => {
-      const sentiment = successCase.investmentIndex >= 60 ? "positive" : 
-                       successCase.investmentIndex <= 40 ? "negative" : "neutral";
-      
+      const sentiment =
+        successCase.investmentIndex >= 60 ? "positive" : successCase.investmentIndex <= 40 ? "negative" : "neutral";
+
       return `
 [학습된 성공 패턴 ${index + 1} - 정확도 ${successCase.accuracy}%]
 키워드: ${successCase.keywords.join(", ")}
@@ -125,7 +123,7 @@ ${examples}
  */
 function createSentimentPrompt(news: News, learningData: LearningData | null = null): string {
   const fewShotExamples = createFewShotExamples(learningData);
-  
+
   return `
 당신은 금융 시장 전문 분석가입니다. 다음 뉴스를 분석하여 코인 및 주식 시장에 미칠 영향을 판단하세요.
 

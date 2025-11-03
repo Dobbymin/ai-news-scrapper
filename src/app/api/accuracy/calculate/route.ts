@@ -6,7 +6,7 @@ import { createAccuracyLog } from "@/server/utils/calculate-accuracy.server";
 /**
  * POST /api/accuracy/calculate
  * @description 어제의 예측과 오늘의 실제 시장 결과를 비교하여 정확도를 계산합니다.
- * 
+ *
  * 이 API는:
  * 1. 어제의 분석 결과(예측)를 로드
  * 2. 오늘의 시장 데이터(실제)를 로드

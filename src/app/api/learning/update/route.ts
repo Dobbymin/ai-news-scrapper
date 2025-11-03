@@ -6,7 +6,7 @@ import { createLearningData } from "@/server/utils/learning-data.server";
 /**
  * POST /api/learning/update
  * @description 학습 데이터를 자동으로 생성하고 업데이트합니다.
- * 
+ *
  * 이 API는:
  * 1. 모든 정확도 로그를 로드
  * 2. 각 로그에 해당하는 분석 결과를 로드

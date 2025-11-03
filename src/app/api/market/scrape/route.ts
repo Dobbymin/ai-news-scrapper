@@ -6,7 +6,7 @@ import { saveJson } from "@/server/storage/json-store.server";
 /**
  * POST /api/market/scrape
  * @description 암호화폐와 주식 시장 데이터를 수집합니다.
- * 
+ *
  * 이 API는:
  * 1. 비트코인, 이더리움 가격 변동률 수집
  * 2. KOSPI, KOSDAQ 지수 변동률 수집

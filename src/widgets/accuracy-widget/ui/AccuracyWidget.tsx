@@ -1,8 +1,3 @@
-/**
- * AccuracyWidget - Widget Main Component
- * @description 정확도 검토 위젯
- */
-
 "use client";
 
 import { Alert, AlertDescription, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared";
@@ -14,11 +9,6 @@ import { useAccuracyData } from "../model/useAccuracyData";
 import { AccuracyChart } from "./AccuracyChart";
 import { AccuracyRecordCard } from "./AccuracyRecordCard";
 import { AccuracyStats } from "./AccuracyStats";
-
-/**
- * AccuracyWidget - Widget Main Component
- * @description 정확도 검토 위젯
- */
 
 /**
  * AccuracyWidget - Widget Main Component

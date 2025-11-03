@@ -1,6 +1,6 @@
 {
-  "createdAt": "2025-11-02T11:03:37.005Z",
-  "totalCases": 1,
+  "createdAt": "2025-11-03T05:30:17.370Z",
+  "totalCases": 2,
   "successCases": [
     {
       "date": "2025-11-01",
@@ -18,20 +18,24 @@
       "newsCount": 20
     }
   ],
-  "failureCases": [],
+  "failureCases": [
+    {
+      "date": "2025-11-02",
+      "accuracy": 30,
+      "investmentIndex": 57.6,
+      "predictedDirection": "neutral",
+      "actualDirection": "positive",
+      "errorPattern": "방향 예측 실패",
+      "keywords": [
+        "젠슨 황",
+        "기술 협력",
+        "엔비디아",
+        "반도체",
+        "부동산 규제"
+      ]
+    }
+  ],
   "keywordPatterns": [
-    {
-      "keyword": "젠슨 황",
-      "frequency": 1,
-      "successRate": 100,
-      "avgAccuracy": 70
-    },
-    {
-      "keyword": "엔비디아",
-      "frequency": 1,
-      "successRate": 100,
-      "avgAccuracy": 70
-    },
     {
       "keyword": "삼성전자",
       "frequency": 1,
@@ -45,24 +49,51 @@
       "avgAccuracy": 70
     },
     {
+      "keyword": "젠슨 황",
+      "frequency": 2,
+      "successRate": 50,
+      "avgAccuracy": 50
+    },
+    {
+      "keyword": "엔비디아",
+      "frequency": 2,
+      "successRate": 50,
+      "avgAccuracy": 50
+    },
+    {
       "keyword": "기술 협력",
+      "frequency": 2,
+      "successRate": 50,
+      "avgAccuracy": 50
+    },
+    {
+      "keyword": "반도체",
       "frequency": 1,
-      "successRate": 100,
-      "avgAccuracy": 70
+      "successRate": 0,
+      "avgAccuracy": 30
+    },
+    {
+      "keyword": "부동산 규제",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 30
     }
   ],
   "summary": {
-    "avgAccuracy": 70,
-    "directionAccuracy": 100,
+    "avgAccuracy": 50,
+    "directionAccuracy": 50,
     "successCount": 1,
-    "failureCount": 0,
+    "failureCount": 1,
     "topKeywords": [
-      "젠슨 황",
-      "엔비디아",
       "삼성전자",
       "gpu",
+      "젠슨 황",
+      "엔비디아",
       "기술 협력"
     ],
-    "improvementAreas": []
+    "improvementAreas": [
+      "방향 예측 정확도 개선 필요",
+      "전체 정확도 향상 필요"
+    ]
   }
 }

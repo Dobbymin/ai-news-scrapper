@@ -1,0 +1,24 @@
+{
+  "date": "2025-11-02",
+  "accuracy": 30,
+  "prediction": {
+    "index": 57.6,
+    "direction": "neutral",
+    "date": "2025-11-02"
+  },
+  "actual": {
+    "date": "2025-11-03",
+    "crypto": {
+      "btc": -2.22,
+      "eth": -3.61
+    },
+    "stock": {
+      "kospi": 99.732,
+      "kosdaq": 11.631
+    },
+    "collectedAt": "2025-11-03T05:30:17.303Z"
+  },
+  "isCorrect": false,
+  "errorRate": 100,
+  "verifiedAt": "2025-11-03T05:30:17.330Z"
+}

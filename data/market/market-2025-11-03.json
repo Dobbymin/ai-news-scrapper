@@ -1,12 +1,12 @@
 {
   "date": "2025-11-03",
   "crypto": {
-    "btc": -2.22,
-    "eth": -3.61
+    "btc": 0,
+    "eth": 0
   },
   "stock": {
-    "kospi": 99.732,
-    "kosdaq": 11.631
+    "kospi": 0,
+    "kosdaq": 0
   },
-  "collectedAt": "2025-11-03T05:30:17.303Z"
+  "collectedAt": "2025-11-03T07:26:32.889Z"
 }

@@ -1,6 +1,6 @@
 {
-  "createdAt": "2025-11-03T07:26:32.992Z",
-  "totalCases": 2,
+  "createdAt": "2025-11-04T07:26:48.851Z",
+  "totalCases": 3,
   "successCases": [
     {
       "date": "2025-11-01",
@@ -33,16 +33,26 @@
       "newsCount": 20
     }
   ],
-  "failureCases": [],
+  "failureCases": [
+    {
+      "date": "2025-11-03",
+      "accuracy": 29.7,
+      "investmentIndex": 70.3,
+      "predictedDirection": "positive",
+      "actualDirection": "neutral",
+      "errorPattern": "방향 예측 실패",
+      "keywords": [
+        "실적 개선",
+        "엔비디아",
+        "sk하이닉스",
+        "hd현대중공업",
+        "페루"
+      ]
+    }
+  ],
   "keywordPatterns": [
     {
       "keyword": "젠슨 황",
-      "frequency": 2,
-      "successRate": 100,
-      "avgAccuracy": 70
-    },
-    {
-      "keyword": "엔비디아",
       "frequency": 2,
       "successRate": 100,
       "avgAccuracy": 70
@@ -76,20 +86,53 @@
       "frequency": 1,
       "successRate": 100,
       "avgAccuracy": 70
+    },
+    {
+      "keyword": "엔비디아",
+      "frequency": 3,
+      "successRate": 66.7,
+      "avgAccuracy": 56.6
+    },
+    {
+      "keyword": "실적 개선",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 29.7
+    },
+    {
+      "keyword": "sk하이닉스",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 29.7
+    },
+    {
+      "keyword": "hd현대중공업",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 29.7
+    },
+    {
+      "keyword": "페루",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 29.7
     }
   ],
   "summary": {
-    "avgAccuracy": 70,
-    "directionAccuracy": 100,
+    "avgAccuracy": 56.6,
+    "directionAccuracy": 66.7,
     "successCount": 2,
-    "failureCount": 0,
+    "failureCount": 1,
     "topKeywords": [
       "젠슨 황",
-      "엔비디아",
       "삼성전자",
       "gpu",
-      "기술 협력"
+      "기술 협력",
+      "반도체"
     ],
-    "improvementAreas": []
+    "improvementAreas": [
+      "방향 예측 정확도 개선 필요",
+      "전체 정확도 향상 필요"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 {
-  "createdAt": "2025-11-04T07:26:48.851Z",
-  "totalCases": 3,
+  "createdAt": "2025-11-05T07:26:17.601Z",
+  "totalCases": 4,
   "successCases": [
     {
       "date": "2025-11-01",
@@ -30,6 +30,21 @@
       ],
       "positiveRatio": 30,
       "avgConfidence": 81.3,
+      "newsCount": 20
+    },
+    {
+      "date": "2025-11-04",
+      "accuracy": 70,
+      "investmentIndex": 55.1,
+      "keywords": [
+        "코스피",
+        "엔비디아",
+        "철강산업",
+        "고도화 방안",
+        "공급과잉 해소"
+      ],
+      "positiveRatio": 30,
+      "avgConfidence": 81.6,
       "newsCount": 20
     }
   ],
@@ -88,10 +103,34 @@
       "avgAccuracy": 70
     },
     {
+      "keyword": "코스피",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "철강산업",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "고도화 방안",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
+      "keyword": "공급과잉 해소",
+      "frequency": 1,
+      "successRate": 100,
+      "avgAccuracy": 70
+    },
+    {
       "keyword": "엔비디아",
-      "frequency": 3,
-      "successRate": 66.7,
-      "avgAccuracy": 56.6
+      "frequency": 4,
+      "successRate": 75,
+      "avgAccuracy": 59.9
     },
     {
       "keyword": "실적 개선",
@@ -119,9 +158,9 @@
     }
   ],
   "summary": {
-    "avgAccuracy": 56.6,
-    "directionAccuracy": 66.7,
-    "successCount": 2,
+    "avgAccuracy": 59.9,
+    "directionAccuracy": 75,
+    "successCount": 3,
     "failureCount": 1,
     "topKeywords": [
       "젠슨 황",
@@ -131,7 +170,6 @@
       "반도체"
     ],
     "improvementAreas": [
-      "방향 예측 정확도 개선 필요",
       "전체 정확도 향상 필요"
     ]
   }

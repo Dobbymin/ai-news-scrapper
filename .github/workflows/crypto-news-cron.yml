@@ -1,0 +1,57 @@
+name: Crypto News Daily Scrape
+
+on:
+  schedule:
+    # 매일 10:00 KST (01:00 UTC)
+    - cron: '0 1 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-and-analyze:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      AUTO_COMMIT: 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run crypto news scrape & analysis
+        run: pnpm cron:crypto
+
+      - name: Commit & push generated data (optional)
+        if: env.AUTO_COMMIT == 'true'
+        run: |
+          CHANGED=$(git status --porcelain data/crypto-news data/crypto-analysis | wc -l | tr -d ' ')
+          if [ "$CHANGED" != "0" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/crypto-news data/crypto-analysis
+            git commit -m "chore(crypto-news): 자동 크롤링 & 분석 데이터 업데이트 $(date -u +'%Y-%m-%d')"
+            git push
+          else
+            echo "No new data files to commit."
+          fi
+
+      - name: Post job summary
+        run: |
+          echo "### ✅ Crypto news daily scrape completed" >> $GITHUB_STEP_SUMMARY
+          echo "실행 시각 (UTC): $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "스크립트: pnpm cron:crypto" >> $GITHUB_STEP_SUMMARY
+          echo "자동 커밋 여부: $AUTO_COMMIT" >> $GITHUB_STEP_SUMMARY

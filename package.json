@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "learning": "tsx src/server/automation/daily-learning.ts",
+    "cron:crypto": "tsx src/server/automation/cron-crypto-scrape.ts",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",

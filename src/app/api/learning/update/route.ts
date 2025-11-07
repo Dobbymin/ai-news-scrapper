@@ -4,6 +4,13 @@ import { loadAllAccuracyLogs, loadAnalysis, saveLearningData } from "@/server/st
 import { createLearningData } from "@/server/utils/learning-data.server";
 
 /**
+ * Route Segment Config
+ * - 빌드 시점에 자동 실행 방지
+ */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+/**
  * POST /api/learning/update
  * @description 학습 데이터를 자동으로 생성하고 업데이트합니다.
  *

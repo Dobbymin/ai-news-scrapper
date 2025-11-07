@@ -1,6 +1,6 @@
 {
-  "createdAt": "2025-11-06T05:40:17.373Z",
-  "totalCases": 4,
+  "createdAt": "2025-11-07T07:25:59.740Z",
+  "totalCases": 5,
   "successCases": [
     {
       "date": "2025-11-01",
@@ -63,6 +63,21 @@
         "hd현대중공업",
         "페루"
       ]
+    },
+    {
+      "date": "2025-11-06",
+      "accuracy": 33.6,
+      "investmentIndex": 66.4,
+      "predictedDirection": "positive",
+      "actualDirection": "neutral",
+      "errorPattern": "방향 예측 실패",
+      "keywords": [
+        "코스피",
+        "강세장",
+        "kb증권",
+        "반도체",
+        "상승"
+      ]
     }
   ],
   "keywordPatterns": [
@@ -91,19 +106,7 @@
       "avgAccuracy": 70
     },
     {
-      "keyword": "반도체",
-      "frequency": 1,
-      "successRate": 100,
-      "avgAccuracy": 70
-    },
-    {
       "keyword": "부동산 규제",
-      "frequency": 1,
-      "successRate": 100,
-      "avgAccuracy": 70
-    },
-    {
-      "keyword": "코스피",
       "frequency": 1,
       "successRate": 100,
       "avgAccuracy": 70
@@ -133,6 +136,18 @@
       "avgAccuracy": 59.9
     },
     {
+      "keyword": "반도체",
+      "frequency": 2,
+      "successRate": 50,
+      "avgAccuracy": 51.8
+    },
+    {
+      "keyword": "코스피",
+      "frequency": 2,
+      "successRate": 50,
+      "avgAccuracy": 51.8
+    },
+    {
       "keyword": "실적 개선",
       "frequency": 1,
       "successRate": 0,
@@ -155,21 +170,40 @@
       "frequency": 1,
       "successRate": 0,
       "avgAccuracy": 29.7
+    },
+    {
+      "keyword": "강세장",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 33.6
+    },
+    {
+      "keyword": "kb증권",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 33.6
+    },
+    {
+      "keyword": "상승",
+      "frequency": 1,
+      "successRate": 0,
+      "avgAccuracy": 33.6
     }
   ],
   "summary": {
-    "avgAccuracy": 59.9,
-    "directionAccuracy": 75,
+    "avgAccuracy": 54.7,
+    "directionAccuracy": 60,
     "successCount": 3,
-    "failureCount": 1,
+    "failureCount": 2,
     "topKeywords": [
       "젠슨 황",
       "삼성전자",
       "gpu",
       "기술 협력",
-      "반도체"
+      "부동산 규제"
     ],
     "improvementAreas": [
+      "방향 예측 정확도 개선 필요",
       "전체 정확도 향상 필요"
     ]
   }

@@ -36,7 +36,7 @@ const SCRAPER_CONFIG = {
  * 브라우저 초기화
  */
 async function initBrowser(): Promise<Browser> {
-  return await puppeteer.launch({
+  const launchOptions: Parameters<typeof puppeteer.launch>[0] = {
     headless: true,
     args: [
       "--no-sandbox",
@@ -45,7 +45,14 @@ async function initBrowser(): Promise<Browser> {
       "--disable-accelerated-2d-canvas",
       "--disable-gpu",
     ],
-  });
+  };
+
+  // GitHub Actions 등에서 setup-chrome로 설치된 경로를 사용할 수 있도록 지원
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    (launchOptions as any).executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  }
+
+  return await puppeteer.launch(launchOptions);
 }
 
 /**

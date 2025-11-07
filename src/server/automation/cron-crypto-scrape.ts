@@ -5,9 +5,9 @@
  */
 import "dotenv/config";
 
-import { scrapeBlockmediaNewsWithRetry, removeDuplicateCryptoNews } from "../scraper/scraper-blockmedia.server";
-import { saveCryptoNews } from "../storage/json-store.server";
 import { analyzeCryptoNews } from "../ai/analyze-crypto-news.server";
+import { removeDuplicateCryptoNews, scrapeBlockmediaNewsWithRetry } from "../scraper/scraper-blockmedia.server";
+import { saveCryptoNews } from "../storage/json-store.server";
 
 async function main() {
   const start = Date.now();

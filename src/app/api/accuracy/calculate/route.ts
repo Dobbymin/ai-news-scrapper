@@ -4,6 +4,13 @@ import { loadAnalysis, loadMarketData, saveAccuracyLog } from "@/server/storage/
 import { createAccuracyLog } from "@/server/utils/calculate-accuracy.server";
 
 /**
+ * Route Segment Config
+ * - 빌드 시점에 자동 실행 방지
+ */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+/**
  * POST /api/accuracy/calculate
  * @description 어제의 예측과 오늘의 실제 시장 결과를 비교하여 정확도를 계산합니다.
  *

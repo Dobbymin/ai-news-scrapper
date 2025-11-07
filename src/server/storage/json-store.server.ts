@@ -501,3 +501,36 @@ export async function loadLatestCryptoAnalysis(): Promise<AnalysisResult | null>
     return null;
   }
 }
+
+/**
+ * 가장 최근의 코인 뉴스 파일을 로드
+ *
+ * @returns 가장 최근 코인 뉴스 배열 (없으면 빈 배열)
+ */
+export async function loadLatestCryptoNews(): Promise<News[]> {
+  const newsDir = path.join(DATA_DIR, "crypto-news");
+
+  try {
+    await ensureDirectory(newsDir);
+    const files = await fs.readdir(newsDir);
+
+    // crypto-news-YYYY-MM-DD.json 형식의 파일만 필터링
+    const newsFiles = files
+      .filter((file) => file.startsWith("crypto-news-") && file.endsWith(".json"))
+      .sort()
+      .reverse(); // 최신순 정렬
+
+    if (newsFiles.length === 0) {
+      return [];
+    }
+
+    // 가장 최근 파일 로드
+    const latestFile = newsFiles[0];
+    const filePath = path.join(newsDir, latestFile);
+    const content = await fs.readFile(filePath, "utf-8");
+    return NewsArraySchema.parse(JSON.parse(content));
+  } catch (error) {
+    console.error("최근 코인 뉴스 로드 실패:", error);
+    return [];
+  }
+}

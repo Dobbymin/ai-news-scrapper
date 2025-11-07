@@ -1,0 +1,27 @@
+
+[2025-11-07T16:06:13.267Z] UNKNOWN
+URL: N/A
+Error: page.waitForTimeout is not a function
+Stack: TypeError: page.waitForTimeout is not a function
+    at extractNewsList (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:1987:16)
+    at async scrapeBlockmediaNews (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:2092:27)
+    at async withRetry (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:1861:20)
+---
+
+[2025-11-07T16:06:20.437Z] UNKNOWN
+URL: N/A
+Error: page.waitForTimeout is not a function
+Stack: TypeError: page.waitForTimeout is not a function
+    at extractNewsList (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:1987:16)
+    at async scrapeBlockmediaNews (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:2092:27)
+    at async withRetry (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:1861:20)
+---
+
+[2025-11-07T16:06:33.149Z] UNKNOWN
+URL: N/A
+Error: page.waitForTimeout is not a function
+Stack: TypeError: page.waitForTimeout is not a function
+    at extractNewsList (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:1987:16)
+    at async scrapeBlockmediaNews (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:2092:27)
+    at async withRetry (/Users/gimgangmin/Desktop/Dev/sidePJ/ai-news-trader/.next/dev/server/chunks/[root-of-the-server]__19d37d49._.js:1861:20)
+---

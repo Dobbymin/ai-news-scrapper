@@ -369,3 +369,135 @@ export async function saveLearningData(learningData: LearningData): Promise<stri
 export async function loadLearningData(): Promise<LearningData | null> {
   return loadJson<LearningData>("learning", "learning-data.json");
 }
+
+/**
+ * 코인 뉴스 데이터를 JSON 파일로 저장
+ *
+ * @param news 저장할 코인 뉴스 배열
+ * @param date 저장 날짜 (기본값: 오늘)
+ * @returns 저장된 파일 경로
+ */
+export async function saveCryptoNews(news: News[], date: Date = new Date()): Promise<string> {
+  // 유효성 검증
+  const validated = NewsArraySchema.parse(news);
+
+  // 파일 경로 생성
+  const dateStr = formatDate(date);
+  const cryptoNewsDir = path.join(DATA_DIR, "crypto-news");
+  const filePath = path.join(cryptoNewsDir, `crypto-news-${dateStr}.json`);
+
+  // 디렉토리 확인 및 생성
+  await ensureDirectory(cryptoNewsDir);
+
+  // JSON 파일 저장
+  await fs.writeFile(filePath, JSON.stringify(validated, null, 2), "utf-8");
+
+  return filePath;
+}
+
+/**
+ * JSON 파일에서 코인 뉴스 데이터 로드
+ *
+ * @param date 로드할 날짜 (기본값: 오늘)
+ * @returns 코인 뉴스 배열 (파일이 없으면 빈 배열)
+ */
+export async function loadCryptoNews(date: Date = new Date()): Promise<News[]> {
+  try {
+    const dateStr = formatDate(date);
+    const filePath = path.join(DATA_DIR, "crypto-news", `crypto-news-${dateStr}.json`);
+
+    // 파일 읽기
+    const content = await fs.readFile(filePath, "utf-8");
+    const data = JSON.parse(content);
+
+    // 유효성 검증
+    return NewsArraySchema.parse(data);
+  } catch (error) {
+    // 파일이 없거나 에러 발생 시 빈 배열 반환
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+}
+
+/**
+ * 특정 날짜의 코인 뉴스 파일이 존재하는지 확인
+ *
+ * @param date 확인할 날짜
+ * @returns 파일 존재 여부
+ */
+export async function cryptoNewsExists(date: Date = new Date()): Promise<boolean> {
+  try {
+    const dateStr = formatDate(date);
+    const filePath = path.join(DATA_DIR, "crypto-news", `crypto-news-${dateStr}.json`);
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 코인 뉴스 분석 결과를 JSON 파일로 저장
+ *
+ * @param analysis 저장할 분석 결과
+ * @param date 저장 날짜 (기본값: 오늘)
+ * @returns 저장된 파일 경로
+ */
+export async function saveCryptoAnalysis(analysis: AnalysisResult, date: Date = new Date()): Promise<string> {
+  // 유효성 검증
+  const validated = AnalysisResultSchema.parse(analysis);
+
+  // 파일 경로 생성
+  const dateStr = formatDate(date);
+  const fileName = `crypto-analysis-${dateStr}.json`;
+
+  return saveJson(validated, "crypto-analysis", fileName);
+}
+
+/**
+ * 코인 뉴스 분석 결과를 JSON 파일에서 로드
+ *
+ * @param date 로드할 날짜 (기본값: 오늘)
+ * @returns 분석 결과 (파일이 없으면 null)
+ */
+export async function loadCryptoAnalysis(date: Date = new Date()): Promise<AnalysisResult | null> {
+  const dateStr = formatDate(date);
+  const fileName = `crypto-analysis-${dateStr}.json`;
+
+  return loadJson<AnalysisResult>("crypto-analysis", fileName);
+}
+
+/**
+ * 가장 최근의 코인 뉴스 분석 결과를 로드
+ *
+ * @returns 가장 최근 분석 결과 (없으면 null)
+ */
+export async function loadLatestCryptoAnalysis(): Promise<AnalysisResult | null> {
+  const analysisDir = path.join(DATA_DIR, "crypto-analysis");
+
+  try {
+    await ensureDirectory(analysisDir);
+    const files = await fs.readdir(analysisDir);
+
+    // crypto-analysis-YYYY-MM-DD.json 형식의 파일만 필터링
+    const analysisFiles = files
+      .filter((file) => file.startsWith("crypto-analysis-") && file.endsWith(".json"))
+      .sort()
+      .reverse(); // 최신순 정렬
+
+    if (analysisFiles.length === 0) {
+      return null;
+    }
+
+    // 가장 최근 파일 로드
+    const latestFile = analysisFiles[0];
+    const filePath = path.join(analysisDir, latestFile);
+    const content = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(content) as AnalysisResult;
+  } catch (error) {
+    console.error("최근 코인 뉴스 분석 결과 로드 실패:", error);
+    return null;
+  }
+}

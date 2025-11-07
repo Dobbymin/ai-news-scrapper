@@ -4,6 +4,13 @@ import { scrapeAllMarketData } from "@/server/scraper/scraper-market.server";
 import { saveJson } from "@/server/storage/json-store.server";
 
 /**
+ * Route Segment Config
+ * - 빌드 시점에 자동 실행 방지
+ */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+/**
  * POST /api/market/scrape
  * @description 암호화폐와 주식 시장 데이터를 수집합니다.
  *

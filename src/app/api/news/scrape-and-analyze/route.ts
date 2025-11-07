@@ -5,6 +5,13 @@ import { removeDuplicateNews, scrapeNaverNews } from "@/server/scraper/scraper-n
 import { saveNews } from "@/server/storage/json-store.server";
 
 /**
+ * Route Segment Config
+ * - 빌드 시점에 자동 실행 방지
+ */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+/**
  * POST /api/news/scrape-and-analyze
  * @description 당일 뉴스 크롤링 후 AI 분석까지 일괄 수행합니다.
  * @query count? 스크랩할 뉴스 개수(기본 20)

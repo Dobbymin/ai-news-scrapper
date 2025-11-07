@@ -3,6 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { analyzeAndCalculate } from "@/server/ai/analyze-and-calculate.server";
 
 /**
+ * Route Segment Config
+ * - 빌드 시점에 자동 실행 방지
+ */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+/**
  * POST /api/analyze/run
  * @description 뉴스 수집 및 AI 분석 실행
  */

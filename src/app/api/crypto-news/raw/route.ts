@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import {
-  loadCryptoAnalysis,
-  loadCryptoNews,
-  loadLatestCryptoAnalysis,
-  loadLatestCryptoNews,
-} from "@/server/storage/json-store.server";
+  loadCryptoAnalysisFromSupabase,
+  loadCryptoNewsFromSupabase,
+  loadLatestCryptoAnalysisFromSupabase,
+  loadLatestCryptoNewsFromSupabase,
+} from "@/server/storage/supabase-store.server";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (type === "news") {
-      const data = date ? await loadCryptoNews(date) : await loadLatestCryptoNews();
+      const data = date ? await loadCryptoNewsFromSupabase(date) : await loadLatestCryptoNewsFromSupabase();
       if (!data || data.length === 0) {
         return withCors({ success: false, message: "해당 날짜의 코인 뉴스가 없습니다." }, { status: 404 });
       }
@@ -58,7 +58,9 @@ export async function GET(req: NextRequest) {
     }
 
     // analysis
-    const analysis = date ? await loadCryptoAnalysis(date) : await loadLatestCryptoAnalysis();
+    const analysis = date
+      ? await loadCryptoAnalysisFromSupabase(date)
+      : await loadLatestCryptoAnalysisFromSupabase();
     if (!analysis) {
       return withCors({ success: false, message: "해당 날짜의 분석 결과가 없습니다." }, { status: 404 });
     }

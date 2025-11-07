@@ -15,7 +15,10 @@ jobs:
     env:
       NODE_ENV: production
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      AUTO_COMMIT: 'true'
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      AUTO_COMMIT: 'false'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,23 +53,10 @@ jobs:
       - name: Run crypto news scrape & analysis
         run: pnpm cron:crypto
 
-      - name: Commit & push generated data (optional)
-        if: env.AUTO_COMMIT == 'true'
-        run: |
-          CHANGED=$(git status --porcelain data/crypto-news data/crypto-analysis | wc -l | tr -d ' ')
-          if [ "$CHANGED" != "0" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add data/crypto-news data/crypto-analysis
-            git commit -m "chore(crypto-news): 자동 크롤링 & 분석 데이터 업데이트 $(date -u +'%Y-%m-%d')"
-            git push
-          else
-            echo "No new data files to commit."
-          fi
-
       - name: Post job summary
         run: |
           echo "### ✅ Crypto news daily scrape completed" >> $GITHUB_STEP_SUMMARY
           echo "실행 시각 (UTC): $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "데이터 저장: Supabase 데이터베이스" >> $GITHUB_STEP_SUMMARY
           echo "스크립트: pnpm cron:crypto" >> $GITHUB_STEP_SUMMARY
           echo "자동 커밋 여부: $AUTO_COMMIT" >> $GITHUB_STEP_SUMMARY

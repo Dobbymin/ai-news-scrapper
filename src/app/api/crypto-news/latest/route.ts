@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { loadCryptoAnalysis, loadCryptoNews } from "@/server/storage/json-store.server";
+import {
+  loadCryptoAnalysisFromSupabase,
+  loadCryptoNewsFromSupabase,
+} from "@/server/storage/supabase-store.server";
 import {
   calculateInvestmentIndex,
   getInvestmentGrade,
@@ -15,11 +18,11 @@ export async function GET(request: NextRequest) {
   try {
     const today = new Date();
 
-    // 1) 코인 뉴스 로드
-    const news = await loadCryptoNews(today);
+    // 1) 코인 뉴스 로드 (Supabase)
+    const news = await loadCryptoNewsFromSupabase(today);
 
-    // 2) 분석 결과 로드
-    const analysis = await loadCryptoAnalysis(today);
+    // 2) 분석 결과 로드 (Supabase)
+    const analysis = await loadCryptoAnalysisFromSupabase(today);
 
     if (!analysis) {
       return NextResponse.json(

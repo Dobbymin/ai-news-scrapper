@@ -7,7 +7,10 @@
 import type { AnalysisProgress, AnalysisResult } from "@/entities/analysis";
 import type { News } from "@/entities/news";
 
-import { loadCryptoNews, saveCryptoAnalysis } from "../storage/json-store.server";
+import {
+  loadCryptoNewsFromSupabase,
+  saveCryptoAnalysisToSupabase,
+} from "../storage/supabase-store.server";
 import {
   calculateInvestmentIndex,
   getInvestmentGrade,
@@ -39,8 +42,8 @@ export async function analyzeCryptoNews(
     console.log("📥 Step 1: 전달받은 코인 뉴스 데이터 사용");
     newsList = newsData;
   } else {
-    console.log("📥 Step 1: 저장된 코인 뉴스 데이터 로드");
-    newsList = await loadCryptoNews(date);
+    console.log("📥 Step 1: Supabase에서 코인 뉴스 데이터 로드");
+    newsList = await loadCryptoNewsFromSupabase(date);
 
     if (newsList.length === 0) {
       throw new Error("저장된 코인 뉴스가 없습니다. 먼저 코인 뉴스 크롤링을 실행하세요.");
@@ -87,10 +90,10 @@ export async function analyzeCryptoNews(
     analyzedAt: new Date().toISOString(),
   };
 
-  // Step 7: 결과 저장
-  console.log("\n💾 Step 7: 결과 저장");
-  const filePath = await saveCryptoAnalysis(result, date);
-  console.log(`✅ 저장 완료: ${filePath}`);
+  // Step 7: Supabase에 결과 저장
+  console.log("\n💾 Step 7: Supabase에 결과 저장");
+  await saveCryptoAnalysisToSupabase(result, date);
+  console.log(`✅ 저장 완료`);
 
   console.log("━".repeat(50));
   console.log("🎉 코인 뉴스 분석 프로세스 완료!\n");

@@ -1,6 +1,7 @@
 # 코인 뉴스 API 사용 가이드
 
 ## 배포 정보
+
 - **배포 URL**: https://ai-news-scrapper.vercel.app
 - **플랫폼**: Vercel
 - **자동 업데이트**: 매일 10:00 KST (GitHub Actions)
@@ -10,15 +11,18 @@
 ## API 엔드포인트
 
 ### 1. 원본 JSON 데이터 조회
+
 외부 프론트엔드/백엔드에서 크롤링 및 분석 결과를 직접 가져올 수 있습니다.
 
 **Endpoint**: `GET /api/crypto-news/raw`
 
 **Query Parameters**:
+
 - `type` (필수): `news` 또는 `analysis`
 - `date` (선택): `YYYY-MM-DD` 형식 또는 `latest` (기본값: `latest`)
 
 **예시**:
+
 ```bash
 # 최신 코인 뉴스 조회
 curl 'https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=news&date=latest'
@@ -31,6 +35,7 @@ curl 'https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=news&date=202
 ```
 
 **Response (news)**:
+
 ```json
 {
   "success": true,
@@ -49,6 +54,7 @@ curl 'https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=news&date=202
 ```
 
 **Response (analysis)**:
+
 ```json
 {
   "success": true,
@@ -79,35 +85,34 @@ curl 'https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=news&date=202
 ---
 
 ## CORS 지원
+
 모든 도메인에서 접근 가능합니다 (`Access-Control-Allow-Origin: *`).
 
 **JavaScript (브라우저)**:
+
 ```javascript
 async function fetchLatestCryptoNews() {
-  const res = await fetch(
-    'https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=news&date=latest'
-  );
+  const res = await fetch("https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=news&date=latest");
   const json = await res.json();
   if (json.success) {
-    console.log('뉴스 개수:', json.data.length);
-    console.log('첫 번째 뉴스:', json.data[0]);
+    console.log("뉴스 개수:", json.data.length);
+    console.log("첫 번째 뉴스:", json.data[0]);
   }
 }
 
 async function fetchLatestAnalysis() {
-  const res = await fetch(
-    'https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=analysis&date=latest'
-  );
+  const res = await fetch("https://ai-news-scrapper.vercel.app/api/crypto-news/raw?type=analysis&date=latest");
   const json = await res.json();
   if (json.success) {
-    console.log('투자 지수:', json.data.investmentIndex);
-    console.log('긍정:', json.data.summary.positive);
-    console.log('부정:', json.data.summary.negative);
+    console.log("투자 지수:", json.data.investmentIndex);
+    console.log("긍정:", json.data.summary.positive);
+    console.log("부정:", json.data.summary.negative);
   }
 }
 ```
 
 **Python**:
+
 ```python
 import requests
 
@@ -124,6 +129,7 @@ print(f"주요 키워드: {', '.join(analysis['keywords'])}")
 ```
 
 **React 예시**:
+
 ```typescript
 import { useEffect, useState } from 'react';
 
@@ -174,6 +180,7 @@ export function useCryptoNews() {
 ## 에러 처리
 
 ### 404 (데이터 없음)
+
 ```json
 {
   "success": false,
@@ -182,6 +189,7 @@ export function useCryptoNews() {
 ```
 
 ### 400 (잘못된 요청)
+
 ```json
 {
   "success": false,
@@ -190,6 +198,7 @@ export function useCryptoNews() {
 ```
 
 ### 500 (서버 오류)
+
 ```json
 {
   "success": false,
@@ -202,24 +211,30 @@ export function useCryptoNews() {
 ## 추가 개선 아이디어
 
 ### 날짜 목록 API
+
 사용 가능한 날짜 리스트를 제공하는 엔드포인트 추가 가능:
+
 ```bash
 GET /api/crypto-news/dates
 # Response: { "success": true, "dates": ["2025-11-07", "2025-11-06", ...] }
 ```
 
 ### 메트릭 집계 API
+
 최근 N일간의 평균 투자 지수, 감성 추이 등:
+
 ```bash
 GET /api/crypto-news/metrics?days=7
 ```
 
 ### Webhook 알림
+
 투자 지수가 특정 임계값 이하/이상일 때 Slack/Discord 알림.
 
 ---
 
 ## 라이선스 및 사용 제한
+
 - 블록미디어 뉴스 출처 명시 필수
 - 상업적 용도 시 별도 라이선스 확인 필요
 - API 과도한 요청 시 Vercel 서버리스 한도 초과 가능 (캐싱 권장)
@@ -227,4 +242,5 @@ GET /api/crypto-news/metrics?days=7
 ---
 
 ## 문의
+
 GitHub Issues: https://github.com/Dobbymin/ai-news-scrapper/issues

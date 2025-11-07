@@ -46,3 +46,4 @@ next-env.d.ts
 # vibe coding assistant
 /.github/copilot-instructions.md
 /docs/prd.md
+.vscode/

@@ -4,4 +4,4 @@
  */
 
 // 현재 공통 컴포넌트 없음
-export {};
+export * from "./button";

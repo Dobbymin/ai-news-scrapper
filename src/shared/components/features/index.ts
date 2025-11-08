@@ -4,4 +4,5 @@
  */
 
 // 현재 기능 컴포넌트 없음
-export {};
+export * from "./footer";
+export * from "./header";

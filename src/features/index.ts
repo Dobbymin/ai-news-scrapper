@@ -5,3 +5,4 @@
 
 export * from "./ai-analysis";
 export * from "./learning";
+export * from "./api-docs";

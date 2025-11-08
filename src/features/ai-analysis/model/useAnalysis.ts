@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * AI Analysis Feature - Model
  * @description AI 뉴스 분석 실행 훅

@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Learning Feature - Model
  * @description 학습 데이터 업데이트 훅

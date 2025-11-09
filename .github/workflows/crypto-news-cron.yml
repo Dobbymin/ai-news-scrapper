@@ -50,13 +50,13 @@ jobs:
       - name: Export Chrome path for Puppeteer
         run: echo "PUPPETEER_EXECUTABLE_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
 
-      - name: Run crypto news scrape & analysis
-        run: pnpm cron:crypto
+      - name: Run full scrape & analysis (Naver, Coinness, Crypto)
+        run: pnpm cron:all
 
       - name: Post job summary
         run: |
           echo "### ✅ Crypto news daily scrape completed" >> $GITHUB_STEP_SUMMARY
           echo "실행 시각 (UTC): $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "데이터 저장: Supabase 데이터베이스" >> $GITHUB_STEP_SUMMARY
-          echo "스크립트: pnpm cron:crypto" >> $GITHUB_STEP_SUMMARY
+          echo "스크립트: pnpm cron:all" >> $GITHUB_STEP_SUMMARY
           echo "자동 커밋 여부: $AUTO_COMMIT" >> $GITHUB_STEP_SUMMARY

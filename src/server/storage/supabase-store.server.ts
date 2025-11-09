@@ -213,6 +213,105 @@ export async function saveCryptoAnalysisToSupabase(analysis: AnalysisResult, dat
 }
 
 /**
+ * 일반 뉴스(Naver) 저장
+ */
+export async function saveGeneralNewsToSupabase(news: News[], date: Date = new Date()): Promise<number> {
+  const supabase = getSupabaseClient();
+  const dateStr = formatDate(date);
+
+  console.log(`💾 Supabase에 일반 뉴스 저장 시작 (${dateStr}): ${news.length}건`);
+
+  // 중복 방지: 동일 날짜에 이미 저장된 항목이 있으면 스킵
+  const { data: existing } = await supabase.from("news").select("id").eq("date", dateStr).limit(1);
+  if (existing && existing.length > 0) {
+    console.log(`ℹ️  오늘(${dateStr})은 이미 일반 뉴스가 저장되어 있습니다. 저장을 건너뜁니다.`);
+    return 0;
+  }
+
+  const rows = news.map((item) => ({
+    news_id: item.id,
+    title: item.title,
+    content: item.content,
+    url: item.url,
+    published_at: item.publishedAt,
+    source: item.source,
+    scraped_at: item.scrapedAt,
+    date: dateStr,
+  }));
+
+  const { data, error } = await supabase.from("news").insert(rows).select();
+
+  if (error) {
+    if ((error as any).code === "23505") {
+      console.log(`ℹ️  중복으로 인해 일부 또는 전체 일반 뉴스가 저장되지 않았습니다.`);
+      return 0;
+    }
+    console.error("❌ 일반 뉴스 저장 실패:", error);
+    throw new Error(`Supabase 일반 뉴스 저장 실패: ${error.message}`);
+  }
+
+  console.log(`✅ 일반 뉴스 저장 완료: ${data?.length || 0}건`);
+  return data?.length || 0;
+}
+
+/**
+ * 일반 뉴스 분석 결과 저장
+ */
+export async function saveNewsAnalysisToSupabase(analysis: AnalysisResult, date: Date = new Date()): Promise<void> {
+  const supabase = getSupabaseClient();
+  const dateStr = formatDate(date);
+
+  console.log(`💾 Supabase에 일반 뉴스 분석 결과 저장 시작 (${dateStr})`);
+
+  const row = {
+    date: dateStr,
+    total_news: analysis.totalNews,
+    positive_count: analysis.summary.positive,
+    negative_count: analysis.summary.negative,
+    neutral_count: analysis.summary.neutral,
+    keywords: analysis.keywords,
+    news_analysis: analysis.newsAnalysis,
+    analyzed_at: analysis.analyzedAt,
+  };
+
+  const { error } = await supabase.from("news_analysis").upsert(row, { onConflict: "date" });
+  if (error) {
+    console.error("❌ 일반 뉴스 분석 결과 저장 실패:", error);
+    throw new Error(`Supabase 일반 뉴스 분석 저장 실패: ${error.message}`);
+  }
+
+  console.log(`✅ 일반 뉴스 분석 결과 저장 완료`);
+}
+
+/**
+ * 시장 데이터 저장 (coinness/binance)
+ */
+export async function saveMarketDataToSupabase(
+  dataObj: { btc: number; eth: number; avgAltcoin?: number },
+  date: Date = new Date(),
+): Promise<void> {
+  const supabase = getSupabaseClient();
+  const dateStr = formatDate(date);
+
+  console.log(`💾 Supabase에 시장 데이터 저장 시작 (${dateStr})`);
+
+  const row = {
+    date: dateStr,
+    btc: dataObj.btc,
+    eth: dataObj.eth,
+    avg_altcoin: dataObj.avgAltcoin ?? null,
+  };
+
+  const { error } = await supabase.from("market_data").insert(row);
+  if (error) {
+    console.error("❌ 시장 데이터 저장 실패:", error);
+    throw new Error(`Supabase 시장 데이터 저장 실패: ${error.message}`);
+  }
+
+  console.log(`✅ 시장 데이터 저장 완료`);
+}
+
+/**
  * Supabase에서 코인 뉴스 분석 결과 로드
  *
  * @param date 로드할 날짜 (기본값: 오늘)

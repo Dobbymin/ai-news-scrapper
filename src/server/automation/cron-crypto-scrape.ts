@@ -32,7 +32,11 @@ async function main() {
     // 3) Supabase에 저장
     console.log("\n💾 Step 2: Supabase에 뉴스 저장");
     const savedCount = await saveCryptoNewsToSupabase(uniqueNews, today);
-    console.log(`✅ 저장 완료: ${savedCount}건`);
+    if (savedCount > 0) {
+      console.log(`✅ 저장 완료: ${savedCount}건`);
+    } else {
+      console.log("ℹ️  저장된 항목이 없습니다 (이미 저장됨 또는 중복 URL로 스킵됨)");
+    }
 
     // 4) 분석 (크롤링한 데이터를 바로 전달하여 I/O 최소화)
     console.log("\n📊 Step 3: 감성 분석 실행");

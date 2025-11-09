@@ -33,7 +33,15 @@ export async function saveCryptoNewsToSupabase(news: News[], date: Date = new Da
 
   console.log(`💾 Supabase에 코인 뉴스 저장 시작 (${dateStr}): ${news.length}건`);
 
-  // 기존 데이터 삭제 (동일 날짜)
+  // 0) 이미 오늘 저장된 데이터가 있는지 사전 확인
+  const { data: existingCheck } = await supabase.from("crypto_news").select("id").eq("date", dateStr).limit(1);
+
+  if (existingCheck && existingCheck.length > 0) {
+    console.log(`ℹ️  오늘(${dateStr})은 이미 최신 코인 뉴스가 저장되어 있습니다. 저장을 건너뜁니다.`);
+    return 0;
+  }
+
+  // 1) 기존 데이터 삭제 (동일 날짜)
   const { error: deleteError } = await supabase.from("crypto_news").delete().eq("date", dateStr);
 
   if (deleteError) {
@@ -41,7 +49,7 @@ export async function saveCryptoNewsToSupabase(news: News[], date: Date = new Da
     throw new Error(`Supabase 기존 뉴스 삭제 실패: ${deleteError.message}`);
   }
 
-  // 새 데이터 삽입
+  // 2) 새 데이터 삽입
   const rows = news.map((item) => ({
     news_id: item.id,
     title: item.title,
@@ -56,6 +64,24 @@ export async function saveCryptoNewsToSupabase(news: News[], date: Date = new Da
   const { data, error } = await supabase.from("crypto_news").insert(rows).select();
 
   if (error) {
+    // URL 전역 유니크 제약으로 인한 중복(23505)일 경우, 친절한 메시지 출력 후 스킵
+    if ((error as any).code === "23505") {
+      const { data: latestDateRow } = await supabase
+        .from("crypto_news")
+        .select("date")
+        .order("date", { ascending: false })
+        .limit(1)
+        .single();
+
+      const latestDate = latestDateRow?.date ?? "알 수 없음";
+      console.log(`ℹ️  중복 URL로 인해 오늘(${dateStr}) 데이터는 별도 저장하지 않습니다.`);
+      console.log(`   └ 최신 저장 날짜: ${latestDate}`);
+      console.log(
+        `   └ 힌트: 'UNIQUE (url)' 제약으로 동일 URL은 1회만 저장됩니다. 일자별 스냅샷이 필요하면 (date, url) 복합 유니크로 전환하세요.`,
+      );
+      return 0;
+    }
+
     console.error("❌ 코인 뉴스 저장 실패:", error);
     throw new Error(`Supabase 코인 뉴스 저장 실패: ${error.message}`);
   }
@@ -155,10 +181,7 @@ export async function loadLatestCryptoNewsFromSupabase(): Promise<News[]> {
  * @param analysis 저장할 분석 결과
  * @param date 저장 날짜 (기본값: 오늘)
  */
-export async function saveCryptoAnalysisToSupabase(
-  analysis: AnalysisResult,
-  date: Date = new Date(),
-): Promise<void> {
+export async function saveCryptoAnalysisToSupabase(analysis: AnalysisResult, date: Date = new Date()): Promise<void> {
   const supabase = getSupabaseClient();
   const dateStr = formatDate(date);
 

@@ -20,6 +20,48 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+type SupabaseQueryResult<T> = {
+  data: T | null;
+  error: { message?: string; details?: string; code?: string } | null;
+};
+
+const TRANSIENT_SUPABASE_ATTEMPTS = 3;
+
+function isTransientFetchError(error: SupabaseQueryResult<unknown>["error"]): boolean {
+  if (!error) {
+    return false;
+  }
+
+  return [error.message, error.details].some((value) => value?.includes("fetch failed"));
+}
+
+export function assertSupabaseQuerySucceeded(context: string, error: SupabaseQueryResult<unknown>["error"]): void {
+  if (!error) {
+    return;
+  }
+
+  throw new Error(`Supabase ${context} 실패: ${error.message ?? "알 수 없는 오류"}`);
+}
+
+export async function runSupabaseQueryWithRetry<T>(
+  context: string,
+  query: () => Promise<SupabaseQueryResult<T>>,
+): Promise<SupabaseQueryResult<T>> {
+  let latestResult: SupabaseQueryResult<T> | null = null;
+
+  for (let attempt = 1; attempt <= TRANSIENT_SUPABASE_ATTEMPTS; attempt += 1) {
+    latestResult = await query();
+
+    if (!isTransientFetchError(latestResult.error) || attempt === TRANSIENT_SUPABASE_ATTEMPTS) {
+      return latestResult;
+    }
+
+    console.warn(`⚠️  Supabase ${context} fetch 실패, 재시도 ${attempt}/${TRANSIENT_SUPABASE_ATTEMPTS - 1}`);
+  }
+
+  return latestResult!;
+}
+
 /**
  * 코인 뉴스를 Supabase에 저장
  *
@@ -222,7 +264,11 @@ export async function saveGeneralNewsToSupabase(news: News[], date: Date = new D
   console.log(`💾 Supabase에 일반 뉴스 저장 시작 (${dateStr}): ${news.length}건`);
 
   // 중복 방지: 동일 날짜에 이미 저장된 항목이 있으면 스킵
-  const { data: existing } = await supabase.from("news").select("id").eq("date", dateStr).limit(1);
+  const { data: existing, error: existingError } = await runSupabaseQueryWithRetry<Array<{ id: unknown }>>(
+    "일반 뉴스 중복 확인",
+    async () => await supabase.from("news").select("id").eq("date", dateStr).limit(1),
+  );
+  assertSupabaseQuerySucceeded("일반 뉴스 중복 확인", existingError);
   if (existing && existing.length > 0) {
     console.log(`ℹ️  오늘(${dateStr})은 이미 일반 뉴스가 저장되어 있습니다. 저장을 건너뜁니다.`);
     return 0;
@@ -239,7 +285,10 @@ export async function saveGeneralNewsToSupabase(news: News[], date: Date = new D
     date: dateStr,
   }));
 
-  const { data, error } = await supabase.from("news").insert(rows).select();
+  const { data, error } = await runSupabaseQueryWithRetry<typeof rows>(
+    "일반 뉴스 저장",
+    async () => await supabase.from("news").insert(rows).select(),
+  );
 
   if (error) {
     if ((error as any).code === "23505") {

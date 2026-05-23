@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { SupabaseClient, createClient } from "@supabase/supabase-js";
 
 /**
  * Supabase 클라이언트
@@ -31,7 +31,90 @@ function validateEnv(): { url: string; key: string } {
     );
   }
 
+  validateSupabaseCredentials(url, serviceKey);
+
   return { url, key: serviceKey };
+}
+
+export function getSupabaseProjectRefFromUrl(url: string): string | null {
+  const hostname = new URL(url).hostname;
+  const suffix = ".supabase.co";
+
+  if (!hostname.endsWith(suffix)) {
+    return null;
+  }
+
+  return hostname.slice(0, -suffix.length);
+}
+
+export function getSupabaseJwtProjectRef(key: string): string | null {
+  return getSupabaseJwtPayload(key)?.ref ?? null;
+}
+
+function getSupabaseJwtPayload(key: string): { ref?: string; role?: string } | null {
+  const [, payload] = key.split(".");
+
+  if (!payload) {
+    return null;
+  }
+
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as {
+      ref?: unknown;
+      role?: unknown;
+    };
+
+    return {
+      ref: typeof decoded.ref === "string" ? decoded.ref : undefined,
+      role: typeof decoded.role === "string" ? decoded.role : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function validateSupabaseCredentials(url: string, serviceKey: string): void {
+  const trimmedKey = serviceKey.trim();
+
+  if (trimmedKey !== serviceKey) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY 앞뒤에 공백 또는 줄바꿈이 있습니다. GitHub Actions Secret 값을 다시 저장하세요.",
+    );
+  }
+
+  if (serviceKey.startsWith("sb_publishable_")) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY에 publishable/anon 키가 설정되어 있습니다. 서버 저장 작업에는 service_role 또는 secret key가 필요합니다.",
+    );
+  }
+
+  if (serviceKey.startsWith("sb_secret_")) {
+    return;
+  }
+
+  const urlProjectRef = getSupabaseProjectRefFromUrl(url);
+  const keyPayload = getSupabaseJwtPayload(serviceKey);
+  const keyProjectRef = keyPayload?.ref ?? null;
+
+  if (!keyPayload) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY 형식이 올바르지 않습니다. Supabase Dashboard의 service_role 또는 secret key 값을 GitHub Actions Secret에 다시 저장하세요.",
+    );
+  }
+
+  if (keyPayload.role !== "service_role") {
+    throw new Error(
+      `SUPABASE_SERVICE_ROLE_KEY role(${keyPayload.role ?? "unknown"})이 service_role이 아닙니다. GitHub Actions Secret에 anon 키가 아닌 service_role 키를 설정하세요.`,
+    );
+  }
+
+  if (!urlProjectRef || !keyProjectRef || urlProjectRef === keyProjectRef) {
+    return;
+  }
+
+  throw new Error(
+    `NEXT_PUBLIC_SUPABASE_URL project ref(${urlProjectRef})와 SUPABASE_SERVICE_ROLE_KEY project ref(${keyProjectRef})가 다릅니다. GitHub Actions Secrets를 같은 Supabase 프로젝트 값으로 다시 설정하세요.`,
+  );
 }
 
 export function createSupabaseFetchFailureMessage(method: string, input: RequestInfo | URL, error: unknown): string {

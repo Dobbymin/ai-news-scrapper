@@ -47,6 +47,9 @@ jobs:
       - name: Export Chrome path for Puppeteer
         run: echo "PUPPETEER_EXECUTABLE_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
 
+      - name: Check Supabase credentials
+        run: pnpm check:supabase-env
+
       - name: Run full scrape & analysis (Naver, Coinness, Crypto)
         run: pnpm cron:all
 

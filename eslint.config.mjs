@@ -1,31 +1,34 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import jsxA11y from "eslint-plugin-jsx-a11y";
+import nextVitals from "eslint-config-next/core-web-vitals";
 import prettier from "eslint-plugin-prettier";
 import unusedImports from "eslint-plugin-unused-imports";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const nextConfig = nextVitals.map((config) => {
+  if (!config.plugins?.["@typescript-eslint"]) {
+    return config;
+  }
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  return {
+    ...config,
+    rules: {
+      ...config.rules,
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+    },
+  };
 });
+
 const eslintConfig = [
   {
     ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "public/mockServiceWorker.js", "next-env.d.ts"],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript", "plugin:prettier/recommended"),
+  ...nextConfig,
   {
     plugins: {
       "unused-imports": unusedImports,
-      "jsx-a11y": jsxA11y,
       prettier,
     },
     rules: {
       "react/react-in-jsx-scope": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "warn",
       "react/jsx-sort-props": [
         "warn",
         {

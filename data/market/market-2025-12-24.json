@@ -1,0 +1,12 @@
+{
+  "date": "2025-12-24",
+  "crypto": {
+    "btc": 0,
+    "eth": 0
+  },
+  "stock": {
+    "kospi": 0,
+    "kosdaq": 0
+  },
+  "collectedAt": "2025-12-24T07:30:10.359Z"
+}

@@ -12,6 +12,12 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 let supabaseClient: SupabaseClient | null = null;
 
+type NetworkErrorCause = {
+  code?: string;
+  hostname?: string;
+  message?: string;
+};
+
 /**
  * 환경 변수 검증
  */
@@ -26,6 +32,32 @@ function validateEnv(): { url: string; key: string } {
   }
 
   return { url, key: serviceKey };
+}
+
+export function createSupabaseFetchFailureMessage(method: string, input: RequestInfo | URL, error: unknown): string {
+  const requestUrl = typeof input === "string" || input instanceof URL ? input.toString() : input.url;
+  const origin = new URL(requestUrl).origin;
+  const cause = error instanceof Error ? (error.cause as NetworkErrorCause | undefined) : undefined;
+  const causeParts = [cause?.code, cause?.hostname].filter(Boolean).join(" ");
+  const fallbackMessage = error instanceof Error ? error.message : String(error);
+  const causeMessage = cause?.message ?? fallbackMessage;
+  const causeText = causeParts ? `${causeParts} - ${causeMessage}` : causeMessage;
+
+  return `fetch failed (${method} ${origin}; cause: ${causeText})`;
+}
+
+function createDiagnosticFetch(): typeof fetch {
+  return async (input, init) => {
+    try {
+      return await fetch(input, init);
+    } catch (error) {
+      const method = init?.method ?? (input instanceof Request ? input.method : "GET");
+
+      throw new TypeError(createSupabaseFetchFailureMessage(method, input, error), {
+        cause: error,
+      });
+    }
+  };
 }
 
 /**
@@ -44,6 +76,9 @@ export function getSupabaseClient(): SupabaseClient {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
+    },
+    global: {
+      fetch: createDiagnosticFetch(),
     },
   });
 

@@ -1,11 +1,7 @@
 name: Daily AI Learning
 
 on:
-  # 매일 오후 4시 (KST 기준, UTC 7시) 자동 실행
-  schedule:
-    - cron: "0 7 * * *"
-  
-  # 수동 실행도 가능
+  # 수동 실행만 가능
   workflow_dispatch:
 
 jobs:

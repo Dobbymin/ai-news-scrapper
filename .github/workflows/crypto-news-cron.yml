@@ -1,9 +1,6 @@
 name: Crypto News Daily Scrape
 
 on:
-  schedule:
-    # 매일 10:00 KST (01:00 UTC)
-    - cron: '0 1 * * *'
   workflow_dispatch: {}
 
 permissions:
